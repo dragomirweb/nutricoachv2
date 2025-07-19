@@ -62,7 +62,8 @@ export const auth = betterAuth({
       user: unknown;
       url: string;
     }) => {
-      console.log("Password reset email", { user, url });
+      // TODO: Implement actual email sending
+      // For now, password reset links are only accessible in development via the Better Auth dashboard
     },
     sendVerificationEmail: async ({
       user,
@@ -71,7 +72,8 @@ export const auth = betterAuth({
       user: unknown;
       url: string;
     }) => {
-      console.log("Verification email", { user, url });
+      // TODO: Implement actual email sending
+      // For now, verification links are only accessible in development via the Better Auth dashboard
     },
   },
 
