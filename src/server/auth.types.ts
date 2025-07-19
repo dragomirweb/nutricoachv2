@@ -7,6 +7,7 @@ export interface User {
   email: string;
   name?: string | null;
   emailVerified: boolean;
+  image?: string | null;
   role?: string;
   twoFactorEnabled?: boolean;
   createdAt: Date;

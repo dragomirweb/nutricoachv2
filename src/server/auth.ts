@@ -56,7 +56,9 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     sendResetPassword: async ({
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       user,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       url,
     }: {
       user: unknown;
@@ -66,7 +68,9 @@ export const auth = betterAuth({
       // For now, password reset links are only accessible in development via the Better Auth dashboard
     },
     sendVerificationEmail: async ({
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       user,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       url,
     }: {
       user: unknown;

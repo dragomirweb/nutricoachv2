@@ -4,7 +4,6 @@ import {
   timestamp,
   integer,
   decimal,
-  boolean,
   pgEnum,
   index,
 } from "drizzle-orm/pg-core";

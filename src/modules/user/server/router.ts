@@ -7,6 +7,13 @@ import { pickBy, mapValues } from "lodash";
 
 export const userRouter = router({
   /**
+   * Get current user
+   */
+  getCurrentUser: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.session.user;
+  }),
+
+  /**
    * Get current user's profile
    */
   getProfile: protectedProcedure.query(async ({ ctx }) => {

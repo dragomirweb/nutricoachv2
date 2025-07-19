@@ -66,7 +66,6 @@ export function QuickAddMeal() {
           carbs: item.nutrients.carbs,
           fat: item.nutrients.fat,
         })),
-        aiParsed: true,
       });
     } catch (error) {
       console.error("Error processing meal:", error);
