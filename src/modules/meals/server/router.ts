@@ -19,22 +19,27 @@ const createFoodItemSchema = z.object({
   fiber: z.number().min(0).optional(),
   sodium: z.number().min(0).optional(),
   sugar: z.number().min(0).optional(),
+  // Minerals
+  iron: z.number().min(0).optional(),
+  magnesium: z.number().min(0).optional(),
+  calcium: z.number().min(0).optional(),
+  zinc: z.number().min(0).optional(),
+  potassium: z.number().min(0).optional(),
 });
 
 const createMealSchema = z.object({
   name: z.string().min(1).max(200),
   description: z.string().max(1000).optional(),
-  type: z.enum(["breakfast", "lunch", "dinner", "snack"]).optional(),
+  type: z.enum(["breakfast", "brunch", "lunch", "dinner", "snack", "dessert"]).optional(),
   loggedAt: z.date().optional(),
   foodItems: z.array(createFoodItemSchema).default([]),
-  aiParsed: z.boolean().optional(),
 });
 
 const updateMealSchema = z.object({
   id: z.string(),
   name: z.string().min(1).max(200).optional(),
   description: z.string().max(1000).optional(),
-  type: z.enum(["breakfast", "lunch", "dinner", "snack"]).optional(),
+  type: z.enum(["breakfast", "brunch", "lunch", "dinner", "snack", "dessert"]).optional(),
   loggedAt: z.date().optional(),
   foodItems: z.array(createFoodItemSchema).optional(),
 });
@@ -46,6 +51,11 @@ interface FoodItemData {
   carbs?: number;
   fat?: number;
   fiber?: number;
+  iron?: number;
+  magnesium?: number;
+  calcium?: number;
+  zinc?: number;
+  potassium?: number;
 }
 
 function calculateMealTotals(items: Array<FoodItemData>) {
@@ -55,6 +65,11 @@ function calculateMealTotals(items: Array<FoodItemData>) {
     totalCarbs: sumBy(items, "carbs") || 0,
     totalFat: sumBy(items, "fat") || 0,
     totalFiber: sumBy(items, "fiber") || 0,
+    totalIron: sumBy(items, "iron") || 0,
+    totalMagnesium: sumBy(items, "magnesium") || 0,
+    totalCalcium: sumBy(items, "calcium") || 0,
+    totalZinc: sumBy(items, "zinc") || 0,
+    totalPotassium: sumBy(items, "potassium") || 0,
   };
 }
 
@@ -69,7 +84,7 @@ export const mealsRouter = router({
         cursor: z.string().nullish(),
         startDate: z.date().optional(),
         endDate: z.date().optional(),
-        type: z.enum(["breakfast", "lunch", "dinner", "snack"]).optional(),
+        type: z.enum(["breakfast", "brunch", "lunch", "dinner", "snack", "dessert"]).optional(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -162,7 +177,11 @@ export const mealsRouter = router({
           totalCarbs: totals.totalCarbs.toString(),
           totalFat: totals.totalFat.toString(),
           totalFiber: totals.totalFiber.toString(),
-          aiParsed: input.aiParsed || false,
+          totalIron: totals.totalIron.toString(),
+          totalMagnesium: totals.totalMagnesium.toString(),
+          totalCalcium: totals.totalCalcium.toString(),
+          totalZinc: totals.totalZinc.toString(),
+          totalPotassium: totals.totalPotassium.toString(),
         });
 
         // Insert food items
@@ -182,6 +201,11 @@ export const mealsRouter = router({
               fiber: item.fiber?.toString(),
               sodium: item.sodium?.toString(),
               sugar: item.sugar?.toString(),
+              iron: item.iron?.toString(),
+              magnesium: item.magnesium?.toString(),
+              calcium: item.calcium?.toString(),
+              zinc: item.zinc?.toString(),
+              potassium: item.potassium?.toString(),
             }))
           );
         }
@@ -233,6 +257,11 @@ export const mealsRouter = router({
               totalCarbs: totals.totalCarbs.toString(),
               totalFat: totals.totalFat.toString(),
               totalFiber: totals.totalFiber.toString(),
+              totalIron: totals.totalIron.toString(),
+              totalMagnesium: totals.totalMagnesium.toString(),
+              totalCalcium: totals.totalCalcium.toString(),
+              totalZinc: totals.totalZinc.toString(),
+              totalPotassium: totals.totalPotassium.toString(),
             })
             .where(eq(meals.id, id));
 
@@ -253,6 +282,11 @@ export const mealsRouter = router({
                 fiber: item.fiber?.toString(),
                 sodium: item.sodium?.toString(),
                 sugar: item.sugar?.toString(),
+                iron: item.iron?.toString(),
+                magnesium: item.magnesium?.toString(),
+                calcium: item.calcium?.toString(),
+                zinc: item.zinc?.toString(),
+                potassium: item.potassium?.toString(),
               }))
             );
           }
@@ -323,6 +357,11 @@ export const mealsRouter = router({
           totalCarbs: acc.totalCarbs + parseFloat(meal.totalCarbs || "0"),
           totalFat: acc.totalFat + parseFloat(meal.totalFat || "0"),
           totalFiber: acc.totalFiber + parseFloat(meal.totalFiber || "0"),
+          totalIron: acc.totalIron + parseFloat(meal.totalIron || "0"),
+          totalMagnesium: acc.totalMagnesium + parseFloat(meal.totalMagnesium || "0"),
+          totalCalcium: acc.totalCalcium + parseFloat(meal.totalCalcium || "0"),
+          totalZinc: acc.totalZinc + parseFloat(meal.totalZinc || "0"),
+          totalPotassium: acc.totalPotassium + parseFloat(meal.totalPotassium || "0"),
           mealCount: acc.mealCount + 1,
         }),
         {
@@ -331,6 +370,11 @@ export const mealsRouter = router({
           totalCarbs: 0,
           totalFat: 0,
           totalFiber: 0,
+          totalIron: 0,
+          totalMagnesium: 0,
+          totalCalcium: 0,
+          totalZinc: 0,
+          totalPotassium: 0,
           mealCount: 0,
         }
       );

@@ -1,6 +1,6 @@
 CREATE TYPE "public"."activity_level" AS ENUM('sedentary', 'lightly_active', 'moderately_active', 'very_active', 'extra_active');--> statement-breakpoint
 CREATE TYPE "public"."goal_type" AS ENUM('weight_loss', 'weight_gain', 'maintain', 'muscle_gain');--> statement-breakpoint
-CREATE TYPE "public"."meal_type" AS ENUM('breakfast', 'lunch', 'dinner', 'snack');--> statement-breakpoint
+CREATE TYPE "public"."meal_type" AS ENUM('breakfast', 'brunch', 'lunch', 'dinner', 'snack', 'dessert');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -152,6 +152,11 @@ CREATE TABLE "food_item" (
 	"fiber" numeric(8, 2),
 	"sodium" numeric(8, 2),
 	"sugar" numeric(8, 2),
+	"iron" numeric(8, 2),
+	"magnesium" numeric(8, 2),
+	"calcium" numeric(8, 2),
+	"zinc" numeric(8, 2),
+	"potassium" numeric(8, 2),
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -168,7 +173,11 @@ CREATE TABLE "meal" (
 	"total_carbs" numeric(8, 2),
 	"total_fat" numeric(8, 2),
 	"total_fiber" numeric(8, 2),
-	"ai_parsed" boolean DEFAULT false NOT NULL,
+	"total_iron" numeric(8, 2),
+	"total_magnesium" numeric(8, 2),
+	"total_calcium" numeric(8, 2),
+	"total_zinc" numeric(8, 2),
+	"total_potassium" numeric(8, 2),
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );

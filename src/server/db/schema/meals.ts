@@ -11,11 +11,14 @@ import {
 import { relations } from "drizzle-orm";
 import { users } from "./auth";
 
+// Standard meal types following industry conventions
 export const mealTypeEnum = pgEnum("meal_type", [
   "breakfast",
-  "lunch",
+  "brunch",
+  "lunch", 
   "dinner",
   "snack",
+  "dessert",
 ]);
 
 export const meals = pgTable(
@@ -34,7 +37,12 @@ export const meals = pgTable(
     totalCarbs: decimal("total_carbs", { precision: 8, scale: 2 }),
     totalFat: decimal("total_fat", { precision: 8, scale: 2 }),
     totalFiber: decimal("total_fiber", { precision: 8, scale: 2 }),
-    aiParsed: boolean("ai_parsed").notNull().default(false),
+    // Essential minerals
+    totalIron: decimal("total_iron", { precision: 8, scale: 2 }), // mg
+    totalMagnesium: decimal("total_magnesium", { precision: 8, scale: 2 }), // mg
+    totalCalcium: decimal("total_calcium", { precision: 8, scale: 2 }), // mg
+    totalZinc: decimal("total_zinc", { precision: 8, scale: 2 }), // mg
+    totalPotassium: decimal("total_potassium", { precision: 8, scale: 2 }), // mg
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")
       .notNull()
@@ -66,6 +74,12 @@ export const foodItems = pgTable(
     fiber: decimal("fiber", { precision: 8, scale: 2 }),
     sodium: decimal("sodium", { precision: 8, scale: 2 }),
     sugar: decimal("sugar", { precision: 8, scale: 2 }),
+    // Essential minerals
+    iron: decimal("iron", { precision: 8, scale: 2 }), // mg
+    magnesium: decimal("magnesium", { precision: 8, scale: 2 }), // mg
+    calcium: decimal("calcium", { precision: 8, scale: 2 }), // mg
+    zinc: decimal("zinc", { precision: 8, scale: 2 }), // mg
+    potassium: decimal("potassium", { precision: 8, scale: 2 }), // mg
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")
       .notNull()
