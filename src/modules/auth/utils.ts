@@ -9,7 +9,7 @@ export async function checkRateLimit(
   windowMinutes = 5
 ): Promise<{ allowed: boolean; remainingAttempts: number }> {
   const windowStart = new Date(Date.now() - windowMinutes * 60 * 1000);
-  
+
   const attempts = await db
     .select()
     .from(schema.loginAttempts)
@@ -20,11 +20,11 @@ export async function checkRateLimit(
         eq(schema.loginAttempts.success, false)
       )
     );
-  
+
   const failedAttempts = attempts.length;
   const allowed = failedAttempts < maxAttempts;
   const remainingAttempts = Math.max(0, maxAttempts - failedAttempts);
-  
+
   return { allowed, remainingAttempts };
 }
 
@@ -42,7 +42,7 @@ export async function getDeviceFingerprint(
       )
     )
     .limit(1);
-  
+
   return device || null;
 }
 
@@ -55,7 +55,7 @@ export async function createOrUpdateDeviceFingerprint(
   }
 ) {
   const existing = await getDeviceFingerprint(userId, fingerprint);
-  
+
   if (existing) {
     await db
       .update(schema.deviceFingerprints)
@@ -64,10 +64,10 @@ export async function createOrUpdateDeviceFingerprint(
         ...deviceInfo,
       })
       .where(eq(schema.deviceFingerprints.id, existing.id));
-    
+
     return existing;
   }
-  
+
   const [newDevice] = await db
     .insert(schema.deviceFingerprints)
     .values({
@@ -77,7 +77,7 @@ export async function createOrUpdateDeviceFingerprint(
       ...deviceInfo,
     })
     .returning();
-  
+
   return newDevice;
 }
 
@@ -88,15 +88,15 @@ export async function logAuditEvent(
   request?: Request
 ) {
   const ipAddress = request
-    ? request.headers.get("x-forwarded-for") || 
-      request.headers.get("x-real-ip") || 
+    ? request.headers.get("x-forwarded-for") ||
+      request.headers.get("x-real-ip") ||
       "unknown"
     : undefined;
-  
+
   const userAgent = request
     ? request.headers.get("user-agent") || undefined
     : undefined;
-  
+
   await db.insert(schema.auditLogs).values({
     id: crypto.randomUUID(),
     userId,
@@ -109,11 +109,11 @@ export async function logAuditEvent(
 
 export async function cleanupExpiredTokens() {
   const now = new Date();
-  
+
   await db
     .delete(schema.verificationTokens)
     .where(lte(schema.verificationTokens.expiresAt, now));
-  
+
   await db
     .delete(schema.passwordResetTokens)
     .where(lte(schema.passwordResetTokens.expiresAt, now));
@@ -122,7 +122,7 @@ export async function cleanupExpiredTokens() {
 export async function getRecentSessions(
   userId: string,
   limit = 10
-): Promise<typeof schema.sessions.$inferSelect[]> {
+): Promise<(typeof schema.sessions.$inferSelect)[]> {
   return db
     .select()
     .from(schema.sessions)
@@ -136,23 +136,20 @@ export function generateSecureToken(length = 32): string {
 }
 
 export function hashToken(token: string): string {
-  return crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex");
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
 export function getDeviceInfo(userAgent?: string | null) {
   if (!userAgent) {
     return { deviceType: "unknown", deviceName: "Unknown Device" };
   }
-  
+
   let deviceType = "desktop";
   let deviceName = "Unknown Device";
-  
+
   if (/Mobile|Android|iPhone|iPad|iPod/i.test(userAgent)) {
     deviceType = "mobile";
-    
+
     if (/iPhone|iPad|iPod/i.test(userAgent)) {
       deviceName = "iOS Device";
     } else if (/Android/i.test(userAgent)) {
@@ -172,6 +169,6 @@ export function getDeviceInfo(userAgent?: string | null) {
       deviceName = "Linux PC";
     }
   }
-  
+
   return { deviceType, deviceName };
 }

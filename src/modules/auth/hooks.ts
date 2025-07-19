@@ -6,10 +6,10 @@ import { toast } from "sonner";
 export function useAuth() {
   const { data: session, isPending, error, refetch } = useSession();
   const router = useRouter();
-  
+
   const isAuthenticated = !!session;
   const user = session?.user;
-  
+
   const logout = useCallback(async () => {
     try {
       await signOut();
@@ -20,7 +20,7 @@ export function useAuth() {
       console.error("Logout error:", error);
     }
   }, [router]);
-  
+
   return {
     session,
     user,
@@ -35,53 +35,53 @@ export function useAuth() {
 export function useRequireAuth(redirectTo = "/login") {
   const { isAuthenticated, isPending } = useAuth();
   const router = useRouter();
-  
+
   useEffect(() => {
     if (!isPending && !isAuthenticated) {
       router.push(redirectTo);
     }
   }, [isAuthenticated, isPending, router, redirectTo]);
-  
+
   return { isAuthenticated, isPending };
 }
 
 export function useRequireGuest(redirectTo = "/dashboard") {
   const { isAuthenticated, isPending } = useAuth();
   const router = useRouter();
-  
+
   useEffect(() => {
     if (!isPending && isAuthenticated) {
       router.push(redirectTo);
     }
   }, [isAuthenticated, isPending, router, redirectTo]);
-  
+
   return { isAuthenticated: !isAuthenticated, isPending };
 }
 
 export function useSessionActivity() {
   const { session } = useAuth();
-  
+
   useEffect(() => {
     if (!session) return;
-    
+
     const updateActivity = () => {
       fetch("/api/auth/activity", {
         method: "POST",
         credentials: "include",
       }).catch(console.error);
     };
-    
+
     const interval = setInterval(updateActivity, 5 * 60 * 1000);
-    
+
     const handleUserActivity = () => {
       if (document.visibilityState === "visible") {
         updateActivity();
       }
     };
-    
+
     document.addEventListener("visibilitychange", handleUserActivity);
     window.addEventListener("focus", handleUserActivity);
-    
+
     return () => {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleUserActivity);

@@ -20,7 +20,10 @@ export const users = pgTable("user", {
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 ```
 
@@ -32,10 +35,15 @@ export const sessions = pgTable("session", {
   expiresAt: timestamp("expires_at").notNull(),
   token: text("token").notNull().unique(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
   ipAddress: text("ip_address"),
   userAgent: text("user_agent"),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
 });
 ```
 
@@ -46,7 +54,9 @@ export const accounts = pgTable("account", {
   id: text("id").primaryKey(),
   accountId: text("account_id").notNull(),
   providerId: text("provider_id").notNull(),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
   accessToken: text("access_token"),
   refreshToken: text("refresh_token"),
   idToken: text("id_token"),
@@ -65,12 +75,15 @@ export const activityLevelEnum = pgEnum("activity_level", [
   "lightly_active",
   "moderately_active",
   "very_active",
-  "extra_active"
+  "extra_active",
 ]);
 
 export const userProfiles = pgTable("user_profile", {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .unique()
+    .references(() => users.id, { onDelete: "cascade" }),
   age: integer("age"),
   gender: text("gender"),
   height: decimal("height", { precision: 5, scale: 2 }), // in cm
@@ -78,18 +91,28 @@ export const userProfiles = pgTable("user_profile", {
   activityLevel: activityLevelEnum("activity_level"),
   dietaryRestrictions: text("dietary_restrictions").array(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 ```
 
 ### Goals Table
 
 ```typescript
-export const goalTypeEnum = pgEnum("goal_type", ["weight_loss", "weight_gain", "maintain", "muscle_gain"]);
+export const goalTypeEnum = pgEnum("goal_type", [
+  "weight_loss",
+  "weight_gain",
+  "maintain",
+  "muscle_gain",
+]);
 
 export const goals = pgTable("goal", {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
   type: goalTypeEnum("type").notNull(),
   targetWeight: decimal("target_weight", { precision: 5, scale: 2 }),
   targetDate: timestamp("target_date"),
@@ -99,18 +122,28 @@ export const goals = pgTable("goal", {
   dailyFat: integer("daily_fat"),
   active: boolean("active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 ```
 
 ### Meals Table
 
 ```typescript
-export const mealTypeEnum = pgEnum("meal_type", ["breakfast", "lunch", "dinner", "snack"]);
+export const mealTypeEnum = pgEnum("meal_type", [
+  "breakfast",
+  "lunch",
+  "dinner",
+  "snack",
+]);
 
 export const meals = pgTable("meal", {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description"),
   type: mealTypeEnum("type"),
@@ -122,7 +155,10 @@ export const meals = pgTable("meal", {
   totalFiber: decimal("total_fiber", { precision: 8, scale: 2 }),
   aiParsed: boolean("ai_parsed").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 ```
 
@@ -131,7 +167,9 @@ export const meals = pgTable("meal", {
 ```typescript
 export const foodItems = pgTable("food_item", {
   id: text("id").primaryKey(),
-  mealId: text("meal_id").notNull().references(() => meals.id, { onDelete: "cascade" }),
+  mealId: text("meal_id")
+    .notNull()
+    .references(() => meals.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   brand: text("brand"),
   quantity: decimal("quantity", { precision: 8, scale: 2 }).notNull(),
@@ -144,7 +182,10 @@ export const foodItems = pgTable("food_item", {
   sodium: decimal("sodium", { precision: 8, scale: 2 }),
   sugar: decimal("sugar", { precision: 8, scale: 2 }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at")
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 ```
 
@@ -153,7 +194,9 @@ export const foodItems = pgTable("food_item", {
 ```typescript
 export const weightEntries = pgTable("weight_entry", {
   id: text("id").primaryKey(),
-  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
   weight: decimal("weight", { precision: 5, scale: 2 }).notNull(), // in kg
   loggedAt: timestamp("logged_at").notNull().defaultNow(),
   notes: text("notes"),
@@ -261,17 +304,20 @@ const mealsWithItems = await db.query.meals.findMany({
 
 ```typescript
 await db.transaction(async (tx) => {
-  const [meal] = await tx.insert(meals).values({
-    id: createId(),
-    userId,
-    name: mealData.name,
-    type: mealData.type,
-    totalCalories: calculateTotalCalories(mealData.items),
-    // ... other fields
-  }).returning();
+  const [meal] = await tx
+    .insert(meals)
+    .values({
+      id: createId(),
+      userId,
+      name: mealData.name,
+      type: mealData.type,
+      totalCalories: calculateTotalCalories(mealData.items),
+      // ... other fields
+    })
+    .returning();
 
   await tx.insert(foodItems).values(
-    mealData.items.map(item => ({
+    mealData.items.map((item) => ({
       id: createId(),
       mealId: meal.id,
       ...item,

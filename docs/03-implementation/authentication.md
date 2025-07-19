@@ -20,13 +20,13 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
-  
+
   // Email/password authentication
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
   },
-  
+
   // Social providers
   socialProviders: {
     github: {
@@ -38,7 +38,7 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
-  
+
   // Session configuration
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
@@ -48,7 +48,7 @@ export const auth = betterAuth({
       maxAge: 5 * 60, // 5 minutes cache
     },
   },
-  
+
   // Custom fields
   user: {
     additionalFields: {
@@ -79,13 +79,7 @@ export const authClient = createAuthClient<typeof auth>({
 });
 
 // Export hooks and utilities
-export const {
-  signIn,
-  signUp,
-  signOut,
-  useSession,
-  getSession,
-} = authClient;
+export const { signIn, signUp, signOut, useSession, getSession } = authClient;
 ```
 
 ## Authentication Flows
@@ -380,18 +374,18 @@ Require recent authentication for sensitive operations:
 export const deleteAccountProcedure = protectedProcedure
   .use(async (opts) => {
     const { ctx } = opts;
-    
+
     // Check if session is fresh (created within last 5 minutes)
     const sessionAge = Date.now() - ctx.session.session.createdAt.getTime();
     const isFresh = sessionAge < 5 * 60 * 1000;
-    
+
     if (!isFresh) {
       throw new TRPCError({
         code: "FORBIDDEN",
         message: "Please re-authenticate to perform this action",
       });
     }
-    
+
     return opts.next();
   })
   .mutation(async ({ ctx }) => {
@@ -418,6 +412,7 @@ export const auth = betterAuth({
 ## Security Best Practices
 
 1. **Environment Variables**: Store all secrets in `.env.local`
+
    ```env
    AUTH_SECRET=your-secret-key
    GITHUB_CLIENT_ID=...

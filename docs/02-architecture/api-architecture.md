@@ -5,6 +5,7 @@ This document outlines the tRPC-based API architecture for NutriCoach v2, implem
 ## Overview
 
 NutriCoach uses tRPC v11 for building type-safe APIs that seamlessly integrate with Next.js. The architecture provides:
+
 - End-to-end type safety without code generation
 - Automatic type inference
 - Built-in error handling
@@ -68,14 +69,14 @@ export const publicProcedure = t.procedure;
 // Protected procedure - requires authentication
 export const protectedProcedure = t.procedure.use(async (opts) => {
   const { ctx } = opts;
-  
+
   if (!ctx.session?.user) {
-    throw new TRPCError({ 
+    throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "You must be logged in to access this resource",
     });
   }
-  
+
   return opts.next({
     ctx: {
       ...ctx,
@@ -88,14 +89,14 @@ export const protectedProcedure = t.procedure.use(async (opts) => {
 // Admin procedure - requires admin role
 export const adminProcedure = protectedProcedure.use(async (opts) => {
   const { ctx } = opts;
-  
+
   if (ctx.session.user.role !== "admin") {
-    throw new TRPCError({ 
+    throw new TRPCError({
       code: "FORBIDDEN",
       message: "You must be an admin to access this resource",
     });
   }
-  
+
   return opts.next({ ctx });
 });
 
@@ -143,25 +144,27 @@ import { TRPCError } from "@trpc/server";
 export const mealsRouter = router({
   // List meals with pagination
   list: protectedProcedure
-    .input(z.object({
-      limit: z.number().min(1).max(100).default(10),
-      cursor: z.string().nullish(),
-      startDate: z.date().optional(),
-      endDate: z.date().optional(),
-    }))
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(10),
+        cursor: z.string().nullish(),
+        startDate: z.date().optional(),
+        endDate: z.date().optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       const { limit, cursor, startDate, endDate } = input;
-      
+
       const conditions = [eq(meals.userId, ctx.session.user.id)];
-      
+
       if (startDate) {
         conditions.push(gte(meals.loggedAt, startDate));
       }
-      
+
       if (endDate) {
         conditions.push(lte(meals.loggedAt, endDate));
       }
-      
+
       const items = await ctx.db.query.meals.findMany({
         where: and(...conditions),
         with: {
@@ -171,13 +174,13 @@ export const mealsRouter = router({
         limit: limit + 1,
         offset: cursor ? parseInt(cursor) : 0,
       });
-      
+
       let nextCursor: string | undefined = undefined;
       if (items.length > limit) {
         items.pop();
         nextCursor = String((cursor ? parseInt(cursor) : 0) + limit);
       }
-      
+
       return {
         items,
         nextCursor,
@@ -197,14 +200,14 @@ export const mealsRouter = router({
           foodItems: true,
         },
       });
-      
+
       if (!meal) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Meal not found",
         });
       }
-      
+
       return meal;
     }),
 
@@ -213,10 +216,10 @@ export const mealsRouter = router({
     .input(createMealSchema)
     .mutation(async ({ ctx, input }) => {
       const mealId = createId();
-      
+
       // Calculate totals
       const totals = calculateMealTotals(input.foodItems);
-      
+
       await ctx.db.transaction(async (tx) => {
         // Insert meal
         await tx.insert(meals).values({
@@ -229,11 +232,11 @@ export const mealsRouter = router({
           ...totals,
           aiParsed: input.aiParsed || false,
         });
-        
+
         // Insert food items
         if (input.foodItems.length > 0) {
           await tx.insert(foodItems).values(
-            input.foodItems.map(item => ({
+            input.foodItems.map((item) => ({
               id: createId(),
               mealId,
               ...item,
@@ -241,7 +244,7 @@ export const mealsRouter = router({
           );
         }
       });
-      
+
       return { id: mealId };
     }),
 
@@ -250,46 +253,42 @@ export const mealsRouter = router({
     .input(updateMealSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, ...data } = input;
-      
+
       // Verify ownership
       const existing = await ctx.db.query.meals.findFirst({
-        where: and(
-          eq(meals.id, id),
-          eq(meals.userId, ctx.session.user.id)
-        ),
+        where: and(eq(meals.id, id), eq(meals.userId, ctx.session.user.id)),
       });
-      
+
       if (!existing) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Meal not found",
         });
       }
-      
+
       // Recalculate totals if food items changed
-      const totals = data.foodItems 
-        ? calculateMealTotals(data.foodItems)
-        : {};
-      
+      const totals = data.foodItems ? calculateMealTotals(data.foodItems) : {};
+
       await ctx.db.transaction(async (tx) => {
         // Update meal
-        await tx.update(meals)
+        await tx
+          .update(meals)
           .set({
             ...data,
             ...totals,
             updatedAt: new Date(),
           })
           .where(eq(meals.id, id));
-        
+
         // Update food items if provided
         if (data.foodItems) {
           // Delete existing items
           await tx.delete(foodItems).where(eq(foodItems.mealId, id));
-          
+
           // Insert new items
           if (data.foodItems.length > 0) {
             await tx.insert(foodItems).values(
-              data.foodItems.map(item => ({
+              data.foodItems.map((item) => ({
                 id: createId(),
                 mealId: id,
                 ...item,
@@ -298,7 +297,7 @@ export const mealsRouter = router({
           }
         }
       });
-      
+
       return { success: true };
     }),
 
@@ -306,31 +305,33 @@ export const mealsRouter = router({
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const result = await ctx.db.delete(meals)
-        .where(and(
-          eq(meals.id, input.id),
-          eq(meals.userId, ctx.session.user.id)
-        ));
-      
+      const result = await ctx.db
+        .delete(meals)
+        .where(
+          and(eq(meals.id, input.id), eq(meals.userId, ctx.session.user.id))
+        );
+
       if (result.rowCount === 0) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Meal not found",
         });
       }
-      
+
       return { success: true };
     }),
 
   // AI parse meal description
   parseWithAI: protectedProcedure
-    .input(z.object({
-      description: z.string().min(1),
-    }))
+    .input(
+      z.object({
+        description: z.string().min(1),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       // Call OpenAI to parse meal
       const parsedMeal = await parseMealWithAI(input.description);
-      
+
       return parsedMeal;
     }),
 });
@@ -367,7 +368,7 @@ throw new TRPCError({
   } catch (error) {
     // Log for monitoring
     console.error("Operation failed:", error);
-    
+
     // Return user-friendly error
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
@@ -384,29 +385,29 @@ throw new TRPCError({
 ```typescript
 const rateLimitMiddleware = middleware(async (opts) => {
   const { ctx, next, type } = opts;
-  
+
   if (type === "mutation" && ctx.session) {
     const key = `rate_limit:${ctx.session.user.id}`;
     const count = await redis.incr(key);
-    
+
     if (count === 1) {
       await redis.expire(key, 60); // 1 minute window
     }
-    
-    if (count > 10) { // 10 requests per minute
+
+    if (count > 10) {
+      // 10 requests per minute
       throw new TRPCError({
         code: "TOO_MANY_REQUESTS",
         message: "Rate limit exceeded. Please try again later.",
       });
     }
   }
-  
+
   return next();
 });
 
 // Apply to specific procedures
-export const rateLimitedProcedure = protectedProcedure
-  .use(rateLimitMiddleware);
+export const rateLimitedProcedure = protectedProcedure.use(rateLimitMiddleware);
 ```
 
 ### Logging
@@ -415,12 +416,12 @@ export const rateLimitedProcedure = protectedProcedure
 const loggingMiddleware = middleware(async (opts) => {
   const start = Date.now();
   const { path, type, ctx } = opts;
-  
+
   const result = await opts.next();
-  
+
   const duration = Date.now() - start;
   const userId = ctx.session?.user.id || "anonymous";
-  
+
   console.log({
     path,
     type,
@@ -428,7 +429,7 @@ const loggingMiddleware = middleware(async (opts) => {
     duration,
     ok: result.ok,
   });
-  
+
   return result;
 });
 ```

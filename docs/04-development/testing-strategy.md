@@ -62,7 +62,7 @@ const mockMeal = {
 describe("MealItem", () => {
   it("renders meal information correctly", () => {
     render(<MealItem meal={mockMeal} />);
-    
+
     expect(screen.getByText("Healthy Breakfast")).toBeInTheDocument();
     expect(screen.getByText("breakfast")).toBeInTheDocument();
     expect(screen.getByText("450")).toBeInTheDocument();
@@ -73,18 +73,18 @@ describe("MealItem", () => {
   it("calls onEdit when edit button is clicked", async () => {
     const user = userEvent.setup();
     const onEdit = vi.fn();
-    
+
     render(<MealItem meal={mockMeal} onEdit={onEdit} />);
-    
+
     const editButton = screen.getByRole("button", { name: /edit/i });
     await user.click(editButton);
-    
+
     expect(onEdit).toHaveBeenCalledTimes(1);
   });
 
   it("applies correct styling for meal type", () => {
     const { container } = render(<MealItem meal={mockMeal} />);
-    
+
     const card = container.firstChild;
     expect(card).toHaveClass("border-l-orange-500");
   });
@@ -149,7 +149,11 @@ describe("useCreateMeal", () => {
 
 ```typescript
 // src/lib/__tests__/nutrition-calculator.test.ts
-import { calculateMacros, calculateBMR, calculateTDEE } from "../nutrition-calculator";
+import {
+  calculateMacros,
+  calculateBMR,
+  calculateTDEE,
+} from "../nutrition-calculator";
 
 describe("Nutrition Calculator", () => {
   describe("calculateMacros", () => {
@@ -163,8 +167,8 @@ describe("Nutrition Calculator", () => {
 
       expect(result).toEqual({
         protein: 150, // 2000 * 0.3 / 4
-        carbs: 200,   // 2000 * 0.4 / 4
-        fat: 67,      // 2000 * 0.3 / 9
+        carbs: 200, // 2000 * 0.4 / 4
+        fat: 67, // 2000 * 0.3 / 9
       });
     });
 
@@ -295,7 +299,7 @@ describe("Meals Router", () => {
     beforeEach(async () => {
       // Create test meals
       const mealIds = [createId(), createId(), createId()];
-      
+
       await db.insert(meals).values([
         {
           id: mealIds[0],
@@ -352,12 +356,15 @@ describe("Meal Repository", () => {
 
   beforeAll(async () => {
     // Create test user
-    const [user] = await db.insert(users).values({
-      id: createId(),
-      email: "repo-test@example.com",
-      name: "Repo Test User",
-    }).returning();
-    
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: createId(),
+        email: "repo-test@example.com",
+        name: "Repo Test User",
+      })
+      .returning();
+
     testUserId = user.id;
   });
 
@@ -617,10 +624,10 @@ export const foodItemFactory = {
 test("should calculate total calories correctly", () => {
   // Arrange
   const meal = createMealWithItems();
-  
+
   // Act
   const totalCalories = calculateTotalCalories(meal);
-  
+
   // Assert
   expect(totalCalories).toBe(450);
 });
@@ -688,7 +695,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -701,33 +708,33 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
-      
+          cache: "pnpm"
+
       - run: pnpm install --frozen-lockfile
-      
+
       - run: pnpm typecheck
-      
+
       - run: pnpm lint
-      
+
       - run: pnpm test:unit
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
-      
+
       - run: pnpm test:e2e
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test
-      
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -746,11 +753,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
-      exclude: [
-        "node_modules/",
-        "src/__tests__/",
-        "*.config.*",
-      ],
+      exclude: ["node_modules/", "src/__tests__/", "*.config.*"],
       thresholds: {
         branches: 80,
         functions: 80,

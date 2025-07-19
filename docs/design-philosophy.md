@@ -36,56 +36,57 @@
 
 ```css
 /* Primary Palette */
---primary-green: #10B981;      /* Success, positive actions */
---primary-blue: #3B82F6;       /* Primary actions, links */
---primary-purple: #8B5CF6;     /* Premium features, insights */
+--primary-green: #10b981; /* Success, positive actions */
+--primary-blue: #3b82f6; /* Primary actions, links */
+--primary-purple: #8b5cf6; /* Premium features, insights */
 
 /* Semantic Colors */
---success: #10B981;
---warning: #F59E0B;
---error: #EF4444;
---info: #3B82F6;
+--success: #10b981;
+--warning: #f59e0b;
+--error: #ef4444;
+--info: #3b82f6;
 
 /* Neutral Scale */
---gray-50: #F9FAFB;
---gray-100: #F3F4F6;
---gray-200: #E5E7EB;
---gray-300: #D1D5DB;
---gray-400: #9CA3AF;
---gray-500: #6B7280;
---gray-600: #4B5563;
+--gray-50: #f9fafb;
+--gray-100: #f3f4f6;
+--gray-200: #e5e7eb;
+--gray-300: #d1d5db;
+--gray-400: #9ca3af;
+--gray-500: #6b7280;
+--gray-600: #4b5563;
 --gray-700: #374151;
---gray-800: #1F2937;
+--gray-800: #1f2937;
 --gray-900: #111827;
 
 /* Background Colors */
---bg-primary: #FFFFFF;
---bg-secondary: #F9FAFB;
---bg-tertiary: #F3F4F6;
+--bg-primary: #ffffff;
+--bg-secondary: #f9fafb;
+--bg-tertiary: #f3f4f6;
 
 /* Macro Colors */
---protein: #EC4899;    /* Pink */
---carbs: #F59E0B;      /* Amber */
---fat: #3B82F6;        /* Blue */
---fiber: #10B981;      /* Green */
+--protein: #ec4899; /* Pink */
+--carbs: #f59e0b; /* Amber */
+--fat: #3b82f6; /* Blue */
+--fiber: #10b981; /* Green */
 ```
 
 ### Typography
 
 ```css
 /* Font Family */
---font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+--font-sans:
+  -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
 --font-mono: "SF Mono", "Monaco", "Inconsolata", monospace;
 
 /* Font Sizes */
---text-xs: 0.75rem;    /* 12px */
---text-sm: 0.875rem;   /* 14px */
---text-base: 1rem;     /* 16px */
---text-lg: 1.125rem;   /* 18px */
---text-xl: 1.25rem;    /* 20px */
---text-2xl: 1.5rem;    /* 24px */
---text-3xl: 1.875rem;  /* 30px */
---text-4xl: 2.25rem;   /* 36px */
+--text-xs: 0.75rem; /* 12px */
+--text-sm: 0.875rem; /* 14px */
+--text-base: 1rem; /* 16px */
+--text-lg: 1.125rem; /* 18px */
+--text-xl: 1.25rem; /* 20px */
+--text-2xl: 1.5rem; /* 24px */
+--text-3xl: 1.875rem; /* 30px */
+--text-4xl: 2.25rem; /* 36px */
 
 /* Font Weights */
 --font-normal: 400;
@@ -104,27 +105,27 @@
 ```css
 /* 8px base unit */
 --space-0: 0;
---space-1: 0.25rem;   /* 4px */
---space-2: 0.5rem;    /* 8px */
---space-3: 0.75rem;   /* 12px */
---space-4: 1rem;      /* 16px */
---space-5: 1.25rem;   /* 20px */
---space-6: 1.5rem;    /* 24px */
---space-8: 2rem;      /* 32px */
---space-10: 2.5rem;   /* 40px */
---space-12: 3rem;     /* 48px */
---space-16: 4rem;     /* 64px */
+--space-1: 0.25rem; /* 4px */
+--space-2: 0.5rem; /* 8px */
+--space-3: 0.75rem; /* 12px */
+--space-4: 1rem; /* 16px */
+--space-5: 1.25rem; /* 20px */
+--space-6: 1.5rem; /* 24px */
+--space-8: 2rem; /* 32px */
+--space-10: 2.5rem; /* 40px */
+--space-12: 3rem; /* 48px */
+--space-16: 4rem; /* 64px */
 ```
 
 ### Border Radius
 
 ```css
---radius-sm: 0.25rem;    /* 4px */
---radius-md: 0.5rem;     /* 8px */
---radius-lg: 0.75rem;    /* 12px */
---radius-xl: 1rem;       /* 16px */
---radius-2xl: 1.5rem;    /* 24px */
---radius-full: 9999px;   /* Circular */
+--radius-sm: 0.25rem; /* 4px */
+--radius-md: 0.5rem; /* 8px */
+--radius-lg: 0.75rem; /* 12px */
+--radius-xl: 1rem; /* 16px */
+--radius-2xl: 1.5rem; /* 24px */
+--radius-full: 9999px; /* Circular */
 ```
 
 ### Shadows
@@ -141,6 +142,7 @@
 ### 1. Input Components
 
 #### Voice Input Button
+
 ```css
 .voice-input-button {
   width: 64px;
@@ -163,13 +165,20 @@
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
 }
 ```
 
 #### Natural Language Input
+
 ```css
 .meal-input {
   width: 100%;
@@ -198,6 +207,7 @@
 ### 2. Card Components
 
 #### Dashboard Stat Card
+
 ```css
 .stat-card {
   background: var(--bg-primary);
@@ -209,7 +219,7 @@
 }
 
 .stat-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -249,6 +259,7 @@
 ```
 
 #### Food Item Card
+
 ```css
 .food-card {
   display: flex;
@@ -301,6 +312,7 @@
 ### 3. Charts & Visualizations
 
 #### Macro Distribution Ring
+
 ```css
 .macro-ring {
   width: 200px;
@@ -365,6 +377,7 @@
 ### 4. Navigation
 
 #### Bottom Navigation (Mobile)
+
 ```css
 .bottom-nav {
   position: fixed;
@@ -431,6 +444,7 @@
 ### 5. Feedback & Loading States
 
 #### AI Processing Indicator
+
 ```css
 .ai-processing {
   display: flex;
@@ -449,8 +463,12 @@
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .ai-processing-text {
@@ -482,6 +500,7 @@
 ```
 
 #### Success Animation
+
 ```css
 .success-checkmark {
   width: 80px;
@@ -532,6 +551,7 @@ graph LR
 ```
 
 **Design Considerations:**
+
 - Progressive disclosure: Only ask for essential info upfront
 - Visual progress indicator showing steps
 - Skip options for non-essential steps
@@ -545,23 +565,24 @@ graph TD
     B -->|Voice| C[Voice Recording]
     B -->|Text| D[Text Input]
     B -->|Quick Add| E[Recent/Favorites]
-    
+
     C --> F[Transcription Preview]
     D --> G[AI Processing]
     E --> G
     F --> G
-    
+
     G --> H[Food Items Preview]
     H --> I{Confirm?}
     I -->|Yes| J[Save & Update Stats]
     I -->|Edit| K[Manual Adjustment]
     K --> H
-    
+
     J --> L[Success Animation]
     L --> M[Updated Dashboard]
 ```
 
 **Design Considerations:**
+
 - Large, thumb-friendly input areas
 - Clear AI processing feedback
 - Easy editing before confirmation
@@ -576,16 +597,17 @@ graph LR
     C -->|Weight| D[Weight Tracker]
     C -->|Calories| E[Calorie Tracker]
     C -->|Macros| F[Macro Tracker]
-    
+
     D --> G[Progress Chart]
     E --> G
     F --> G
-    
+
     G --> H[Insights]
     H --> I[Recommendations]
 ```
 
 **Design Considerations:**
+
 - Visual progress indicators
 - Milestone celebrations
 - Trend analysis with simple language
@@ -650,9 +672,10 @@ graph LR
 ```css
 /* Skeleton Loading */
 .skeleton {
-  background: linear-gradient(90deg, 
-    var(--gray-200) 25%, 
-    var(--gray-100) 50%, 
+  background: linear-gradient(
+    90deg,
+    var(--gray-200) 25%,
+    var(--gray-100) 50%,
     var(--gray-200) 75%
   );
   background-size: 200% 100%;
@@ -660,8 +683,12 @@ graph LR
 }
 
 @keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Shimmer Effect */
@@ -671,7 +698,7 @@ graph LR
 }
 
 .shimmer::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
@@ -698,18 +725,21 @@ graph LR
 ## Accessibility Guidelines
 
 ### 1. Color Contrast
+
 - Text on background: 4.5:1 minimum
 - Large text (18px+): 3:1 minimum
 - Interactive elements: 3:1 minimum
 - Provide color-blind friendly alternatives
 
 ### 2. Touch Targets
+
 - Minimum size: 44x44px
 - Spacing between targets: 8px minimum
 - Grouped actions for related items
 - Gesture alternatives for all actions
 
 ### 3. Screen Reader Support
+
 ```html
 <!-- Proper ARIA labels -->
 <button aria-label="Record voice input" class="voice-input-button">
@@ -731,6 +761,7 @@ graph LR
 ```
 
 ### 4. Keyboard Navigation
+
 - All interactive elements reachable via Tab
 - Clear focus indicators
 - Escape key closes modals
@@ -739,6 +770,7 @@ graph LR
 ## Motion & Animation
 
 ### 1. Timing Functions
+
 ```css
 --ease-in: cubic-bezier(0.4, 0, 1, 1);
 --ease-out: cubic-bezier(0, 0, 0.2, 1);
@@ -747,19 +779,22 @@ graph LR
 ```
 
 ### 2. Duration Guidelines
+
 - Micro-interactions: 100-200ms
 - Page transitions: 200-300ms
 - Complex animations: 300-500ms
 - Respect `prefers-reduced-motion`
 
 ### 3. Performance
+
 ```css
 /* Use transform and opacity for animations */
 .slide-in {
   transform: translateY(20px);
   opacity: 0;
-  transition: transform 0.3s var(--ease-out), 
-              opacity 0.3s var(--ease-out);
+  transition:
+    transform 0.3s var(--ease-out),
+    opacity 0.3s var(--ease-out);
 }
 
 .slide-in.active {
@@ -778,10 +813,10 @@ graph LR
 
 ```css
 /* Mobile First */
---screen-sm: 640px;   /* Small tablets */
---screen-md: 768px;   /* Tablets */
---screen-lg: 1024px;  /* Desktop */
---screen-xl: 1280px;  /* Large desktop */
+--screen-sm: 640px; /* Small tablets */
+--screen-md: 768px; /* Tablets */
+--screen-lg: 1024px; /* Desktop */
+--screen-xl: 1280px; /* Large desktop */
 
 /* Usage */
 @media (min-width: 768px) {
@@ -798,19 +833,19 @@ graph LR
 /* Automatic dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-primary: #0F172A;
-    --bg-secondary: #1E293B;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
     --bg-tertiary: #334155;
-    --text-primary: #F1F5F9;
-    --text-secondary: #CBD5E1;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
     /* Adjust other colors accordingly */
   }
 }
 
 /* Manual toggle class */
 .dark {
-  --bg-primary: #0F172A;
-  --bg-secondary: #1E293B;
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
   /* ... rest of dark theme */
 }
 ```
@@ -818,18 +853,21 @@ graph LR
 ## Implementation Priority
 
 ### Phase 1: Core Experience
+
 1. Onboarding flow
 2. Text-based meal input
 3. Basic dashboard
 4. Simple food list
 
 ### Phase 2: Enhanced Features
+
 1. Voice input
 2. AI confidence indicators
 3. Charts and visualizations
 4. Goal tracking
 
 ### Phase 3: Delight & Polish
+
 1. Micro-interactions
 2. Success animations
 3. Advanced gestures
@@ -842,26 +880,26 @@ graph LR
 export const tokens = {
   colors: {
     primary: {
-      green: '#10B981',
-      blue: '#3B82F6',
-      purple: '#8B5CF6',
+      green: "#10B981",
+      blue: "#3B82F6",
+      purple: "#8B5CF6",
     },
     semantic: {
-      success: '#10B981',
-      warning: '#F59E0B',
-      error: '#EF4444',
-      info: '#3B82F6',
+      success: "#10B981",
+      warning: "#F59E0B",
+      error: "#EF4444",
+      info: "#3B82F6",
     },
     gray: {
-      50: '#F9FAFB',
-      100: '#F3F4F6',
+      50: "#F9FAFB",
+      100: "#F3F4F6",
       // ... etc
-    }
+    },
   },
   spacing: {
-    0: '0',
-    1: '0.25rem',
-    2: '0.5rem',
+    0: "0",
+    1: "0.25rem",
+    2: "0.5rem",
     // ... etc
   },
   typography: {
@@ -870,17 +908,18 @@ export const tokens = {
       mono: '"SF Mono", "Monaco", "Inconsolata", monospace',
     },
     fontSize: {
-      xs: '0.75rem',
-      sm: '0.875rem',
+      xs: "0.75rem",
+      sm: "0.875rem",
       // ... etc
-    }
-  }
+    },
+  },
 };
 ```
 
 ## Figma/Sketch Libraries
 
 ### Component Organization
+
 ```
 📁 NutriCoach Design System
   📁 1. Foundations

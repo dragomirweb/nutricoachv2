@@ -5,6 +5,7 @@ This document outlines the architectural patterns and code organization for Nutr
 ## Overview
 
 NutriCoach uses a **feature-based modular architecture** that organizes code by business domains rather than technical layers. This promotes:
+
 - Clear separation of concerns
 - Enhanced maintainability
 - Improved developer experience
@@ -100,6 +101,7 @@ modules/meals/
    - Hooks encapsulate stateful logic
    - Components are pure and testable
    - Services contain business logic
+
 - **schemas.ts**: Data validation schemas (e.g., Zod, Yup)
 - **types.ts**: TypeScript interfaces and type definitions
 - **server/**: Server-side logic, API handlers, database queries
@@ -142,16 +144,16 @@ Maintain consistent import ordering:
 
 ```typescript
 // 1. External dependencies
-import { useState } from 'react'
-import { z } from 'zod'
+import { useState } from "react";
+import { z } from "zod";
 
 // 2. Internal aliases
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@/lib/auth'
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth";
 
 // 3. Relative imports
-import { UserForm } from './components/user-form'
-import type { User } from './types'
+import { UserForm } from "./components/user-form";
+import type { User } from "./types";
 ```
 
 ## Server vs Client Code Separation
@@ -190,35 +192,45 @@ Code that can run on both server and client:
 ## Best Practices
 
 ### 1. Feature-First Organization
+
 Organize code by business features to improve:
+
 - Code discoverability
 - Team collaboration
 - Feature isolation
 - Easier refactoring
 
 ### 2. Consistent Module Structure
+
 Every module should follow the same pattern to:
+
 - Reduce cognitive load
 - Simplify onboarding
 - Enable code generation
 - Improve maintainability
 
 ### 3. Clear Boundaries
+
 Maintain clear separation between:
+
 - Features (horizontal separation)
 - Layers (vertical separation)
 - Server and client code
 - Public and private APIs
 
 ### 4. Type Safety
+
 Leverage TypeScript throughout:
+
 - Strict mode configuration
 - Explicit return types
 - Proper generic constraints
 - Validation at boundaries
 
 ### 5. Progressive Disclosure
+
 Structure modules from high-level to detailed:
+
 - Views → Components → Hooks
 - Public API → Implementation
 - Types → Logic → UI
@@ -262,16 +274,16 @@ NEXT_PUBLIC_API_URL=
 
 ```typescript
 // Server-side
-const apiKey = process.env.API_KEY
+const apiKey = process.env.API_KEY;
 
 // Client-side (only NEXT_PUBLIC_*)
-const appUrl = process.env.NEXT_PUBLIC_APP_URL
+const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
 // With validation
 const env = validateEnv({
   DATABASE_URL: z.string().url(),
   API_KEY: z.string().min(1),
-})
+});
 ```
 
 ## Scaling Considerations

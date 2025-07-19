@@ -10,8 +10,8 @@ export default function HomePage() {
             Welcome to NutriCoach
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Your personal nutrition companion. Track meals, set goals, and achieve 
-            your health objectives with AI-powered insights.
+            Your personal nutrition companion. Track meals, set goals, and
+            achieve your health objectives with AI-powered insights.
           </p>
         </div>
 
@@ -28,21 +28,21 @@ export default function HomePage() {
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Track Nutrition</h3>
             <p className="text-sm text-muted-foreground">
-              Log meals easily with AI-powered food recognition and get detailed 
+              Log meals easily with AI-powered food recognition and get detailed
               nutritional breakdowns.
             </p>
           </div>
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Set Goals</h3>
             <p className="text-sm text-muted-foreground">
-              Define personalized nutrition goals based on your health objectives 
-              and dietary preferences.
+              Define personalized nutrition goals based on your health
+              objectives and dietary preferences.
             </p>
           </div>
           <div className="space-y-2">
             <h3 className="font-semibold text-lg">Track Progress</h3>
             <p className="text-sm text-muted-foreground">
-              Monitor your progress with detailed analytics and insights to stay 
+              Monitor your progress with detailed analytics and insights to stay
               on track.
             </p>
           </div>

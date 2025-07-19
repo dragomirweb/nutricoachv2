@@ -5,6 +5,7 @@ This document outlines data fetching patterns using tRPC with React Query, imple
 ## Overview
 
 NutriCoach uses tRPC with React Query for data fetching, providing:
+
 - Type-safe API calls without code generation
 - Automatic caching and background refetching
 - Optimistic updates for better UX
@@ -50,7 +51,7 @@ export function MealsList() {
 // Fetch user profile first, then goals based on profile
 export function useUserGoals() {
   const { data: profile } = trpc.user.getProfile.useQuery();
-  
+
   const { data: goals } = trpc.user.getGoals.useQuery(
     { userId: profile?.id },
     {
@@ -89,12 +90,12 @@ export function MealDetails({ mealId, isOpen }: Props) {
 // src/modules/meals/ui/hooks/use-create-meal.ts
 export function useCreateMeal() {
   const utils = trpc.useContext();
-  
+
   return trpc.meals.create.useMutation({
     onSuccess: () => {
       // Invalidate and refetch meal list
       utils.meals.list.invalidate();
-      
+
       // Show success notification
       toast.success("Meal logged successfully!");
     },
@@ -107,17 +108,17 @@ export function useCreateMeal() {
 // Component usage
 export function CreateMealForm() {
   const createMeal = useCreateMeal();
-  
+
   const onSubmit = async (data: CreateMealInput) => {
     await createMeal.mutateAsync(data);
     // Mutation succeeded, form can close
   };
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* Form fields */}
-      <Button 
-        type="submit" 
+      <Button
+        type="submit"
         disabled={createMeal.isLoading}
       >
         {createMeal.isLoading ? "Saving..." : "Save Meal"}
@@ -133,44 +134,39 @@ export function CreateMealForm() {
 // Immediate UI update before server confirmation
 export function useUpdateMeal() {
   const utils = trpc.useContext();
-  
+
   return trpc.meals.update.useMutation({
     onMutate: async (updatedMeal) => {
       // Cancel outgoing refetches
       await utils.meals.get.cancel({ id: updatedMeal.id });
       await utils.meals.list.cancel();
-      
+
       // Snapshot previous value
       const previousMeal = utils.meals.get.getData({ id: updatedMeal.id });
-      
+
       // Optimistically update single meal
-      utils.meals.get.setData(
-        { id: updatedMeal.id },
-        (old) => ({ ...old, ...updatedMeal })
-      );
-      
+      utils.meals.get.setData({ id: updatedMeal.id }, (old) => ({
+        ...old,
+        ...updatedMeal,
+      }));
+
       // Optimistically update meal in list
       utils.meals.list.setData(undefined, (old) => {
         if (!old) return old;
         return {
           ...old,
           items: old.items.map((meal) =>
-            meal.id === updatedMeal.id
-              ? { ...meal, ...updatedMeal }
-              : meal
+            meal.id === updatedMeal.id ? { ...meal, ...updatedMeal } : meal
           ),
         };
       });
-      
+
       return { previousMeal };
     },
     onError: (err, updatedMeal, context) => {
       // Rollback on error
       if (context?.previousMeal) {
-        utils.meals.get.setData(
-          { id: updatedMeal.id },
-          context.previousMeal
-        );
+        utils.meals.get.setData({ id: updatedMeal.id }, context.previousMeal);
       }
       toast.error("Failed to update meal");
     },
@@ -190,7 +186,7 @@ export function useCreateMealWithItems() {
   const createMeal = trpc.meals.create.useMutation();
   const addFoodItems = trpc.meals.addFoodItems.useMutation();
   const utils = trpc.useContext();
-  
+
   const createMealWithItems = async (data: MealWithItemsInput) => {
     try {
       // First create the meal
@@ -199,7 +195,7 @@ export function useCreateMealWithItems() {
         type: data.type,
         loggedAt: data.loggedAt,
       });
-      
+
       // Then add food items if any
       if (data.foodItems.length > 0) {
         await addFoodItems.mutateAsync({
@@ -207,17 +203,17 @@ export function useCreateMealWithItems() {
           items: data.foodItems,
         });
       }
-      
+
       // Invalidate queries
       utils.meals.invalidate();
-      
+
       return meal;
     } catch (error) {
       // Handle error appropriately
       throw error;
     }
   };
-  
+
   return {
     mutate: createMealWithItems,
     isLoading: createMeal.isLoading || addFoodItems.isLoading,
@@ -233,20 +229,20 @@ export function useCreateMealWithItems() {
 // Hook for paginated data
 export function usePaginatedMeals(limit = 20) {
   const [cursor, setCursor] = useState<string | null>(null);
-  
+
   const { data, isLoading, isFetching } = trpc.meals.list.useQuery({
     limit,
     cursor,
   });
-  
+
   const hasNextPage = !!data?.nextCursor;
-  
+
   const loadMore = () => {
     if (data?.nextCursor) {
       setCursor(data.nextCursor);
     }
   };
-  
+
   return {
     items: data?.items ?? [],
     isLoading,
@@ -280,25 +276,25 @@ export function InfiniteMealList() {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteMeals();
-  
+
   const { ref, inView } = useInView();
-  
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-  
+
   if (isLoading) return <MealListSkeleton />;
-  
+
   const meals = data?.pages.flatMap((page) => page.items) ?? [];
-  
+
   return (
     <div className="space-y-4">
       {meals.map((meal) => (
         <MealItem key={meal.id} meal={meal} />
       ))}
-      
+
       {/* Infinite scroll trigger */}
       <div ref={ref} className="h-10">
         {isFetchingNextPage && <Spinner />}
@@ -322,7 +318,7 @@ export function useLiveDashboard() {
       refetchIntervalInBackground: true,
     }
   );
-  
+
   return data;
 }
 ```
@@ -333,20 +329,18 @@ export function useLiveDashboard() {
 // Real-time meal updates
 export function useMealSubscription() {
   const utils = trpc.useContext();
-  
+
   trpc.meals.onUpdate.useSubscription(undefined, {
     onData: (meal) => {
       // Update cached data
       utils.meals.get.setData({ id: meal.id }, meal);
-      
+
       // Update meal in list
       utils.meals.list.setData(undefined, (old) => {
         if (!old) return old;
         return {
           ...old,
-          items: old.items.map((m) =>
-            m.id === meal.id ? meal : m
-          ),
+          items: old.items.map((m) => (m.id === meal.id ? meal : m)),
         };
       });
     },
@@ -362,11 +356,11 @@ export function useMealSubscription() {
 // Prefetch meal details on hover
 export function MealListItem({ meal }: { meal: Meal }) {
   const utils = trpc.useContext();
-  
+
   const handleMouseEnter = () => {
     utils.meals.get.prefetch({ id: meal.id });
   };
-  
+
   return (
     <div
       onMouseEnter={handleMouseEnter}
@@ -385,7 +379,7 @@ export function MealListItem({ meal }: { meal: Meal }) {
 export function useRoutePrefetch() {
   const utils = trpc.useContext();
   const router = useRouter();
-  
+
   const prefetchDashboard = async () => {
     await Promise.all([
       utils.nutrition.getDailyStats.prefetch({ date: new Date() }),
@@ -393,7 +387,7 @@ export function useRoutePrefetch() {
       utils.user.getProfile.prefetch(),
     ]);
   };
-  
+
   return { prefetchDashboard };
 }
 ```
@@ -489,7 +483,7 @@ export const queryClient = new QueryClient({
 // Update cache after related action
 export function useDeleteMeal() {
   const utils = trpc.useContext();
-  
+
   return trpc.meals.delete.useMutation({
     onSuccess: (_, variables) => {
       // Remove from cache immediately
@@ -500,7 +494,7 @@ export function useDeleteMeal() {
           items: old.items.filter((meal) => meal.id !== variables.id),
         };
       });
-      
+
       // Remove individual query
       utils.meals.get.removeQueries({ id: variables.id });
     },
@@ -516,7 +510,7 @@ export function useDeleteMeal() {
 // Enable suspense for queries
 export function MealDetailsWithSuspense({ mealId }: { mealId: string }) {
   const { data } = trpc.meals.get.useSuspenseQuery({ id: mealId });
-  
+
   return <MealDetails meal={data} />;
 }
 
@@ -541,11 +535,11 @@ export function useDashboardData() {
     t.meals.list({ limit: 5 }),
     t.user.getActiveGoals(),
   ]);
-  
+
   const isLoading = [profile, stats, recentMeals, goals].some(
     (query) => query.isLoading
   );
-  
+
   return {
     profile: profile.data,
     stats: stats.data,

@@ -29,26 +29,26 @@ Stories are organized by component type:
 Each story file follows the Component Story Format (CSF) 3.0:
 
 ```typescript
-import type { Meta, StoryObj } from '@storybook/react'
-import { ComponentName } from '@/components/ui/component-name'
+import type { Meta, StoryObj } from "@storybook/react";
+import { ComponentName } from "@/components/ui/component-name";
 
 const meta = {
-  title: 'UI/ComponentName',
+  title: "UI/ComponentName",
   component: ComponentName,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
-} satisfies Meta<typeof ComponentName>
+  tags: ["autodocs"],
+} satisfies Meta<typeof ComponentName>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
     // default props
   },
-}
+};
 ```
 
 ## Features
@@ -62,6 +62,7 @@ export const Default: Story = {
 ## Available Components
 
 Currently documented components:
+
 - Button - All variants and sizes
 - Card - Including nutrition-specific examples
 - Input - With form examples and nutrition inputs

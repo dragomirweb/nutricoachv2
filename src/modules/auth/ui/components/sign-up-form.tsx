@@ -18,7 +18,7 @@ export function SignUpForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   const form = useForm<SignUpInput>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -29,7 +29,7 @@ export function SignUpForm() {
       acceptTerms: false,
     },
   });
-  
+
   const onSubmit = async (data: SignUpInput) => {
     try {
       const { error } = await signUp.email({
@@ -37,7 +37,7 @@ export function SignUpForm() {
         password: data.password,
         name: data.name,
       });
-      
+
       if (error) {
         if (error.code === "USER_ALREADY_EXISTS") {
           form.setError("email", {
@@ -54,15 +54,17 @@ export function SignUpForm() {
         }
         return;
       }
-      
-      toast.success("Account created! Please check your email to verify your account.");
+
+      toast.success(
+        "Account created! Please check your email to verify your account."
+      );
       router.push("/verify-email?email=" + encodeURIComponent(data.email));
     } catch (error) {
       console.error("Sign up error:", error);
       toast.error("Something went wrong. Please try again.");
     }
   };
-  
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <div>
@@ -80,7 +82,7 @@ export function SignUpForm() {
           </p>
         )}
       </div>
-      
+
       <div>
         <Label htmlFor="email">Email</Label>
         <Input
@@ -96,7 +98,7 @@ export function SignUpForm() {
           </p>
         )}
       </div>
-      
+
       <div>
         <Label htmlFor="password">Password</Label>
         <div className="relative">
@@ -127,10 +129,11 @@ export function SignUpForm() {
           </p>
         )}
         <p className="text-xs text-muted-foreground mt-1">
-          Must be at least 8 characters with uppercase, lowercase, number, and special character
+          Must be at least 8 characters with uppercase, lowercase, number, and
+          special character
         </p>
       </div>
-      
+
       <div>
         <Label htmlFor="confirmPassword">Confirm Password</Label>
         <div className="relative">
@@ -161,12 +164,12 @@ export function SignUpForm() {
           </p>
         )}
       </div>
-      
+
       <div className="flex items-center space-x-2">
         <Checkbox
           id="acceptTerms"
           checked={form.watch("acceptTerms")}
-          onCheckedChange={(checked) => 
+          onCheckedChange={(checked) =>
             form.setValue("acceptTerms", checked as boolean)
           }
         />
@@ -189,7 +192,7 @@ export function SignUpForm() {
           {form.formState.errors.acceptTerms.message}
         </p>
       )}
-      
+
       <Button
         type="submit"
         className="w-full"
@@ -204,7 +207,7 @@ export function SignUpForm() {
           "Create Account"
         )}
       </Button>
-      
+
       <p className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}
         <Link

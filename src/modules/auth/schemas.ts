@@ -7,75 +7,75 @@ const passwordSchema = z
   .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
   .regex(/[a-z]/, "Password must contain at least one lowercase letter")
   .regex(/[0-9]/, "Password must contain at least one number")
-  .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character");
+  .regex(
+    /[^A-Za-z0-9]/,
+    "Password must contain at least one special character"
+  );
 
-export const signUpSchema = z.object({
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters")
-    .max(50, "Name must be less than 50 characters")
-    .regex(/^[a-zA-Z\s'-]+$/, "Name can only contain letters, spaces, hyphens, and apostrophes"),
-  email: z
-    .string()
-    .email("Invalid email address")
-    .toLowerCase()
-    .trim(),
-  password: passwordSchema,
-  confirmPassword: z.string(),
-  acceptTerms: z
-    .boolean()
-    .refine((val) => val === true, "You must accept the terms and conditions"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const signUpSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, "Name must be at least 2 characters")
+      .max(50, "Name must be less than 50 characters")
+      .regex(
+        /^[a-zA-Z\s'-]+$/,
+        "Name can only contain letters, spaces, hyphens, and apostrophes"
+      ),
+    email: z.string().email("Invalid email address").toLowerCase().trim(),
+    password: passwordSchema,
+    confirmPassword: z.string(),
+    acceptTerms: z
+      .boolean()
+      .refine(
+        (val) => val === true,
+        "You must accept the terms and conditions"
+      ),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export const signInSchema = z.object({
-  email: z
-    .string()
-    .email("Invalid email address")
-    .toLowerCase()
-    .trim(),
+  email: z.string().email("Invalid email address").toLowerCase().trim(),
   password: z.string().min(1, "Password is required"),
   rememberMe: z.boolean().optional(),
 });
 
 export const forgotPasswordSchema = z.object({
-  email: z
-    .string()
-    .email("Invalid email address")
-    .toLowerCase()
-    .trim(),
+  email: z.string().email("Invalid email address").toLowerCase().trim(),
 });
 
-export const resetPasswordSchema = z.object({
-  token: z.string().min(1, "Reset token is required"),
-  password: passwordSchema,
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(1, "Reset token is required"),
+    password: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
-export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: passwordSchema,
-  confirmPassword: z.string(),
-}).refine((data) => data.newPassword !== data.currentPassword, {
-  message: "New password must be different from current password",
-  path: ["newPassword"],
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword !== data.currentPassword, {
+    message: "New password must be different from current password",
+    path: ["newPassword"],
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 export const changeEmailSchema = z.object({
   password: z.string().min(1, "Password is required for security"),
-  newEmail: z
-    .string()
-    .email("Invalid email address")
-    .toLowerCase()
-    .trim(),
+  newEmail: z.string().email("Invalid email address").toLowerCase().trim(),
 });
 
 export const verifyEmailSchema = z.object({
@@ -83,11 +83,7 @@ export const verifyEmailSchema = z.object({
 });
 
 export const magicLinkSchema = z.object({
-  email: z
-    .string()
-    .email("Invalid email address")
-    .toLowerCase()
-    .trim(),
+  email: z.string().email("Invalid email address").toLowerCase().trim(),
 });
 
 export const twoFactorSetupSchema = z.object({
@@ -118,4 +114,6 @@ export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>;
 export type MagicLinkInput = z.infer<typeof magicLinkSchema>;
 export type TwoFactorSetupInput = z.infer<typeof twoFactorSetupSchema>;
 export type TwoFactorVerifyInput = z.infer<typeof twoFactorVerifySchema>;
-export type TwoFactorBackupCodeInput = z.infer<typeof twoFactorBackupCodeSchema>;
+export type TwoFactorBackupCodeInput = z.infer<
+  typeof twoFactorBackupCodeSchema
+>;

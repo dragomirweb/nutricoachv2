@@ -5,6 +5,7 @@ This document provides a comprehensive overview of the NutriCoach v2 database de
 ## Overview
 
 The database is designed around two main domains:
+
 1. **Authentication & User Management** - Powered by Better Auth v1.2.9
 2. **Nutrition & Meal Tracking** - Application-specific functionality
 
@@ -260,16 +261,16 @@ erDiagram
     user ||--o{ dailySummary : "has"
     user ||--o{ member : "belongs to"
     user ||--o{ invitation : "invited by"
-    
+
     organization ||--o{ member : "has"
     organization ||--o{ team : "contains"
     organization ||--o{ invitation : "sends"
-    
+
     team ||--o{ member : "has"
     team ||--o{ invitation : "for"
-    
+
     meal ||--o{ foodItem : "contains"
-    
+
     session ||--o| organization : "active in"
     session ||--o| user : "impersonated by"
 ```
@@ -279,6 +280,7 @@ erDiagram
 ### Better Auth Core Tables
 
 #### User Table
+
 ```sql
 CREATE TABLE "user" (
     id TEXT PRIMARY KEY,
@@ -300,6 +302,7 @@ CREATE INDEX idx_user_email ON "user"(email);
 ```
 
 #### Session Table
+
 ```sql
 CREATE TABLE session (
     id TEXT PRIMARY KEY,
@@ -321,6 +324,7 @@ CREATE INDEX idx_session_token ON session(token);
 ```
 
 #### Account Table
+
 ```sql
 CREATE TABLE account (
     id TEXT PRIMARY KEY,
@@ -343,6 +347,7 @@ CREATE INDEX idx_account_user_id ON account(user_id);
 ```
 
 ### Two-Factor Authentication
+
 ```sql
 CREATE TABLE two_factor (
     id TEXT PRIMARY KEY,
@@ -357,6 +362,7 @@ CREATE INDEX idx_two_factor_user_id ON two_factor(user_id);
 ```
 
 ### API Key Management
+
 ```sql
 CREATE TABLE api_key (
     id TEXT PRIMARY KEY,
@@ -387,6 +393,7 @@ CREATE INDEX idx_api_key_prefix ON api_key(prefix);
 ```
 
 ### Organization Management
+
 ```sql
 CREATE TABLE organization (
     id TEXT PRIMARY KEY,
@@ -418,6 +425,7 @@ CREATE INDEX idx_member_organization_id ON member(organization_id);
 ### NutriCoach Application Tables
 
 #### User Profile
+
 ```sql
 CREATE TABLE user_profile (
     id TEXT PRIMARY KEY,
@@ -427,7 +435,7 @@ CREATE TABLE user_profile (
     height DECIMAL(5,2) CHECK (height > 0), -- in cm
     weight DECIMAL(5,2) CHECK (weight > 0), -- in kg
     activity_level TEXT CHECK (activity_level IN (
-        'sedentary', 'lightly_active', 'moderately_active', 
+        'sedentary', 'lightly_active', 'moderately_active',
         'very_active', 'extra_active'
     )),
     dietary_restrictions TEXT[],
@@ -437,6 +445,7 @@ CREATE TABLE user_profile (
 ```
 
 #### Goals
+
 ```sql
 CREATE TABLE goal (
     id TEXT PRIMARY KEY,
@@ -459,6 +468,7 @@ CREATE INDEX idx_goal_user_id_active ON goal(user_id, active);
 ```
 
 #### Meals
+
 ```sql
 CREATE TABLE meal (
     id TEXT PRIMARY KEY,
@@ -482,6 +492,7 @@ CREATE INDEX idx_meal_logged_at ON meal(user_id, logged_at DESC);
 ```
 
 #### Food Items
+
 ```sql
 CREATE TABLE food_item (
     id TEXT PRIMARY KEY,
@@ -507,13 +518,14 @@ CREATE INDEX idx_food_item_meal_id ON food_item(meal_id);
 ## Data Flow Diagrams
 
 ### Authentication Flow
+
 ```mermaid
 sequenceDiagram
     participant Client
     participant NextJS
     participant BetterAuth
     participant Database
-    
+
     Client->>NextJS: Sign Up Request
     NextJS->>BetterAuth: Create User
     BetterAuth->>Database: Insert User
@@ -525,6 +537,7 @@ sequenceDiagram
 ```
 
 ### Meal Logging Flow
+
 ```mermaid
 sequenceDiagram
     participant User
@@ -533,14 +546,14 @@ sequenceDiagram
     participant Service
     participant Database
     participant AIJob
-    
+
     User->>UI: Enter Meal Description
     UI->>tRPC: Create Meal
     tRPC->>Service: Validate & Process
     Service->>Database: Insert Meal (pending)
     Service->>AIJob: Queue AI Processing
     Service-->>UI: Return Meal ID
-    
+
     Note over AIJob: Async Processing
     AIJob->>OpenAI: Parse Description
     OpenAI-->>AIJob: Food Items + Nutrition
@@ -551,6 +564,7 @@ sequenceDiagram
 ## Security Considerations
 
 ### Data Access Patterns
+
 ```mermaid
 graph TD
     A[User Request] --> B{Authenticated?}
@@ -587,6 +601,7 @@ graph TD
 ## Performance Optimizations
 
 ### Indexes
+
 ```sql
 -- Authentication Performance
 CREATE INDEX idx_user_email ON "user"(email);
@@ -604,9 +619,10 @@ CREATE INDEX idx_goal_user_active ON goal(user_id, active);
 ### Query Optimization Patterns
 
 1. **Batch Loading**
+
    ```sql
    -- Load meals with food items in single query
-   SELECT m.*, 
+   SELECT m.*,
           json_agg(f.*) as food_items
    FROM meal m
    LEFT JOIN food_item f ON f.meal_id = m.id
@@ -617,10 +633,11 @@ CREATE INDEX idx_goal_user_active ON goal(user_id, active);
    ```
 
 2. **Aggregation Views**
+
    ```sql
    -- Materialized view for daily stats
    CREATE MATERIALIZED VIEW daily_nutrition_stats AS
-   SELECT 
+   SELECT
        user_id,
        DATE(logged_at) as date,
        SUM(total_calories) as daily_calories,
@@ -630,18 +647,19 @@ CREATE INDEX idx_goal_user_active ON goal(user_id, active);
        COUNT(*) as meal_count
    FROM meal
    GROUP BY user_id, DATE(logged_at);
-   
+
    CREATE INDEX idx_daily_stats ON daily_nutrition_stats(user_id, date);
    ```
 
 ## Migration Strategy
 
 ### Version Control
+
 ```sql
 -- migrations/001_initial_schema.sql
 -- Better Auth core tables
 
--- migrations/002_nutricoach_tables.sql  
+-- migrations/002_nutricoach_tables.sql
 -- Application-specific tables
 
 -- migrations/003_add_indexes.sql
@@ -652,6 +670,7 @@ CREATE INDEX idx_goal_user_active ON goal(user_id, active);
 ```
 
 ### Rollback Procedures
+
 1. Each migration must have a corresponding rollback script
 2. Test rollbacks in staging before production
 3. Backup database before major migrations
@@ -660,12 +679,14 @@ CREATE INDEX idx_goal_user_active ON goal(user_id, active);
 ## Backup and Recovery
 
 ### Backup Strategy
+
 - **Continuous Backups**: Point-in-time recovery enabled
 - **Daily Snapshots**: Full database backup at 3 AM UTC
 - **Weekly Archives**: Long-term storage for compliance
 - **Geo-Redundancy**: Backups stored in multiple regions
 
 ### Recovery Procedures
+
 1. **Point-in-Time Recovery**: Restore to any point within retention window
 2. **Snapshot Restoration**: Full database restore from daily backups
 3. **Selective Recovery**: Table-level restoration for specific data
@@ -674,6 +695,7 @@ CREATE INDEX idx_goal_user_active ON goal(user_id, active);
 ## Monitoring and Maintenance
 
 ### Key Metrics
+
 - Query performance (p95, p99)
 - Connection pool utilization
 - Table growth rates
@@ -681,6 +703,7 @@ CREATE INDEX idx_goal_user_active ON goal(user_id, active);
 - Cache hit ratios
 
 ### Maintenance Tasks
+
 - Weekly VACUUM ANALYZE
 - Monthly index rebuilding
 - Quarterly partition management
@@ -689,12 +712,14 @@ CREATE INDEX idx_goal_user_active ON goal(user_id, active);
 ## Future Considerations
 
 ### Scalability
+
 - Horizontal sharding by user_id
 - Read replicas for analytics
 - Partitioning for time-series data
 - Caching layer (Redis) integration
 
 ### Feature Expansions
+
 - Social features (following, sharing)
 - Restaurant menu integration
 - Barcode scanning data

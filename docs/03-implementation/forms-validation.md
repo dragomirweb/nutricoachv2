@@ -30,7 +30,7 @@ export type FormProps<TFormValues extends FieldValues> = {
 // Form field props type
 export type FormFieldProps<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
   name: TName;
   label?: string;
@@ -66,11 +66,9 @@ export const phoneSchema = z
   .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number");
 
 // Date validation with custom refinement
-export const futureDateSchema = z
-  .date()
-  .refine((date) => date > new Date(), {
-    message: "Date must be in the future",
-  });
+export const futureDateSchema = z.date().refine((date) => date > new Date(), {
+  message: "Date must be in the future",
+});
 
 // Numeric validation with precision
 export const weightSchema = z
@@ -196,7 +194,7 @@ export function TextInput({
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      
+
       <input
         id={name}
         type={type}
@@ -211,13 +209,13 @@ export function TextInput({
           error ? `${name}-error` : description ? `${name}-description` : undefined
         }
       />
-      
+
       {description && !error && (
         <p id={`${name}-description`} className="text-sm text-gray-600">
           {description}
         </p>
       )}
-      
+
       {error && (
         <p id={`${name}-error`} className="text-sm text-red-600">
           {error.message}
@@ -271,7 +269,7 @@ export function SelectInput({
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      
+
       <select
         id={name}
         {...field}
@@ -289,7 +287,7 @@ export function SelectInput({
           </option>
         ))}
       </select>
-      
+
       {error && (
         <p id={`${name}-error`} className="text-sm text-red-600">
           {error.message}
@@ -494,7 +492,7 @@ export function MealForm() {
 
       <div className="space-y-4">
         <h3 className="font-medium">Food Items</h3>
-        
+
         {fields.map((field, index) => (
           <div key={field.id} className="border p-4 rounded-md space-y-3">
             <div className="flex justify-between">
@@ -639,7 +637,7 @@ const nutritionSchema = z.object({
     .int("Calories must be a whole number")
     .nonnegative("Calories cannot be negative")
     .max(10000, "That seems like too many calories"),
-  
+
   macros: z
     .object({
       protein: z.number(),
@@ -648,7 +646,8 @@ const nutritionSchema = z.object({
     })
     .refine(
       (macros) => {
-        const totalCalories = (macros.protein * 4) + (macros.carbs * 4) + (macros.fat * 9);
+        const totalCalories =
+          macros.protein * 4 + macros.carbs * 4 + macros.fat * 9;
         return Math.abs(totalCalories - data.calories) < 50;
       },
       {
@@ -681,10 +680,7 @@ const updateMeal = trpc.meals.update.useMutation({
   },
   onError: (err, newMeal, context) => {
     // Rollback on error
-    utils.meals.get.setData(
-      { id: newMeal.id },
-      context.previousMeal
-    );
+    utils.meals.get.setData({ id: newMeal.id }, context.previousMeal);
   },
   onSettled: () => {
     // Sync with server

@@ -7,6 +7,7 @@ This guide covers deployment strategies for NutriCoach v2, including production 
 ### Recommended: Vercel (Next.js Optimized)
 
 Vercel provides the best experience for Next.js applications with:
+
 - Automatic deployments
 - Edge functions support
 - Built-in analytics
@@ -88,16 +89,19 @@ pnpm analyze
 ### Initial Setup
 
 1. Install Vercel CLI:
+
    ```bash
    npm i -g vercel
    ```
 
 2. Link project:
+
    ```bash
    vercel link
    ```
 
 3. Configure project:
+
    ```json
    // vercel.json
    {
@@ -268,7 +272,7 @@ CMD ["node", "server.js"]
 
 ```yaml
 # docker-compose.prod.yml
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -352,22 +356,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
-      
+          cache: "pnpm"
+
       - run: pnpm install --frozen-lockfile
-      
+
       - run: pnpm typecheck
-      
+
       - run: pnpm lint
-      
+
       - run: pnpm test
 
   deploy:
@@ -375,27 +379,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
-      
+          cache: "pnpm"
+
       - run: pnpm install --frozen-lockfile
-      
+
       - name: Pull Vercel Environment
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-      
+
       - name: Build Project
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-      
+
       - name: Deploy to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
-      
+
       - name: Run Migrations
         run: |
           pnpm db:migrate
@@ -418,22 +422,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: pnpm/action-setup@v2
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
-      
+          cache: "pnpm"
+
       - run: pnpm install --frozen-lockfile
-      
+
       - name: Deploy to Vercel
         id: deploy
         run: |
           DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }} --yes)
           echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-      
+
       - name: Comment PR
         uses: actions/github-script@v7
         with:
@@ -454,61 +458,61 @@ jobs:
 // next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  output: "standalone",
   poweredByHeader: false,
   compress: true,
-  
+
   images: {
-    domains: ['images.nutricoach.app'],
-    formats: ['image/avif', 'image/webp'],
+    domains: ["images.nutricoach.app"],
+    formats: ["image/avif", "image/webp"],
   },
-  
+
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ['lucide-react', '@headlessui/react'],
+    optimizePackageImports: ["lucide-react", "@headlessui/react"],
   },
-  
+
   headers: async () => [
     {
-      source: '/:path*',
+      source: "/:path*",
       headers: [
         {
-          key: 'X-DNS-Prefetch-Control',
-          value: 'on',
+          key: "X-DNS-Prefetch-Control",
+          value: "on",
         },
         {
-          key: 'Strict-Transport-Security',
-          value: 'max-age=63072000; includeSubDomains; preload',
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains; preload",
         },
         {
-          key: 'X-Content-Type-Options',
-          value: 'nosniff',
+          key: "X-Content-Type-Options",
+          value: "nosniff",
         },
         {
-          key: 'X-Frame-Options',
-          value: 'DENY',
+          key: "X-Frame-Options",
+          value: "DENY",
         },
         {
-          key: 'X-XSS-Protection',
-          value: '1; mode=block',
+          key: "X-XSS-Protection",
+          value: "1; mode=block",
         },
         {
-          key: 'Referrer-Policy',
-          value: 'origin-when-cross-origin',
+          key: "Referrer-Policy",
+          value: "origin-when-cross-origin",
         },
         {
-          key: 'Permissions-Policy',
-          value: 'camera=(), microphone=(), geolocation=()',
+          key: "Permissions-Policy",
+          value: "camera=(), microphone=(), geolocation=()",
         },
       ],
     },
   ],
-  
+
   async rewrites() {
     return [
       {
-        source: '/api/health',
-        destination: '/api/monitoring/health',
+        source: "/api/health",
+        destination: "/api/monitoring/health",
       },
     ];
   },
@@ -521,24 +525,24 @@ export default nextConfig;
 
 ```typescript
 // middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
-  
+
   // Security headers
   response.headers.set(
-    'Content-Security-Policy',
+    "Content-Security-Policy",
     "default-src 'self'; " +
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' *.vercel-insights.com; " +
-    "style-src 'self' 'unsafe-inline'; " +
-    "img-src 'self' blob: data: https:; " +
-    "font-src 'self'; " +
-    "connect-src 'self' https://api.openai.com wss://; " +
-    "frame-ancestors 'none';"
+      "script-src 'self' 'unsafe-eval' 'unsafe-inline' *.vercel-insights.com; " +
+      "style-src 'self' 'unsafe-inline'; " +
+      "img-src 'self' blob: data: https:; " +
+      "font-src 'self'; " +
+      "connect-src 'self' https://api.openai.com wss://; " +
+      "frame-ancestors 'none';"
   );
-  
+
   return response;
 }
 ```
@@ -556,11 +560,11 @@ export async function GET() {
   try {
     // Check database
     await db.execute(sql`SELECT 1`);
-    
+
     // Check Redis
     const redis = await import("@/server/redis");
     await redis.ping();
-    
+
     return Response.json({
       status: "healthy",
       timestamp: new Date().toISOString(),

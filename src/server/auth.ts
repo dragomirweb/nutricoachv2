@@ -14,10 +14,10 @@ export const auth = betterAuth({
       verification: schema.verificationTokens,
     },
   }),
-  
+
   baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL,
   secret: process.env.AUTH_SECRET,
-  
+
   user: {
     modelName: "user",
     additionalFields: {
@@ -34,7 +34,7 @@ export const auth = betterAuth({
       enabled: true,
     },
   },
-  
+
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
@@ -44,25 +44,37 @@ export const auth = betterAuth({
     },
     cookieName: "nutricoach-session",
   },
-  
+
   account: {
     accountLinking: {
       enabled: true,
       trustedProviders: ["google", "github"],
     },
   },
-  
+
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: true,
-    sendResetPassword: async ({ user, url }: { user: unknown; url: string }) => {
+    sendResetPassword: async ({
+      user,
+      url,
+    }: {
+      user: unknown;
+      url: string;
+    }) => {
       console.log("Password reset email", { user, url });
     },
-    sendVerificationEmail: async ({ user, url }: { user: unknown; url: string }) => {
+    sendVerificationEmail: async ({
+      user,
+      url,
+    }: {
+      user: unknown;
+      url: string;
+    }) => {
       console.log("Verification email", { user, url });
     },
   },
-  
+
   socialProviders: {
     github: {
       clientId: process.env.GITHUB_CLIENT_ID!,
@@ -75,7 +87,7 @@ export const auth = betterAuth({
       scopes: ["email", "profile"],
     },
   },
-  
+
   rateLimit: {
     window: 60,
     max: 5,
@@ -91,11 +103,12 @@ export const auth = betterAuth({
       },
     },
   },
-  
-  trustedOrigins: process.env.NODE_ENV === "production" 
-    ? [process.env.NEXT_PUBLIC_APP_URL!]
-    : ["http://localhost:3000"],
-  
+
+  trustedOrigins:
+    process.env.NODE_ENV === "production"
+      ? [process.env.NEXT_PUBLIC_APP_URL!]
+      : ["http://localhost:3000"],
+
   advanced: {
     cookiePrefix: "nutricoach",
     generateId: () => nanoid(),
@@ -104,10 +117,13 @@ export const auth = betterAuth({
     },
     useSecureCookies: process.env.NODE_ENV === "production",
   },
-  
+
   plugins: [],
-  
-  onError: async (error: { message: string; code?: string }, request: Request) => {
+
+  onError: async (
+    error: { message: string; code?: string },
+    request: Request
+  ) => {
     await db.insert(schema.auditLogs).values({
       id: nanoid(),
       action: "auth_error",
@@ -117,15 +133,19 @@ export const auth = betterAuth({
         code: error.code,
         path: request.url,
       },
-      ipAddress: request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown",
+      ipAddress:
+        request.headers.get("x-forwarded-for") ||
+        request.headers.get("x-real-ip") ||
+        "unknown",
       userAgent: request.headers.get("user-agent") || undefined,
     });
-    
+
     return {
       error: {
-        message: process.env.NODE_ENV === "production" 
-          ? "Authentication error occurred" 
-          : error.message,
+        message:
+          process.env.NODE_ENV === "production"
+            ? "Authentication error occurred"
+            : error.message,
         code: error.code,
       },
     };

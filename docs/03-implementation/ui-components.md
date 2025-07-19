@@ -388,7 +388,7 @@ export function NutritionCard({
             <span className="text-2xl font-bold">{value}</span>
             <span className="text-sm text-muted-foreground">{unit}</span>
           </div>
-          
+
           {target && (
             <>
               <div className="text-xs text-muted-foreground">
@@ -464,12 +464,12 @@ export function MealItem({ meal, onEdit, onDelete, className }: MealItemProps) {
                 </span>
               )}
             </div>
-            
+
             <div className="flex items-center gap-1 text-sm text-muted-foreground">
               <Clock className="h-3 w-3" />
               {format(meal.loggedAt, "h:mm a")}
             </div>
-            
+
             <div className="flex flex-wrap gap-4 text-sm">
               {meal.totalCalories && (
                 <div>
@@ -496,12 +496,12 @@ export function MealItem({ meal, onEdit, onDelete, className }: MealItemProps) {
                 </div>
               )}
             </div>
-            
+
             <div className="text-sm text-muted-foreground">
               {meal.foodItems.length} {meal.foodItems.length === 1 ? "item" : "items"}
             </div>
           </div>
-          
+
           <div className="flex gap-1">
             <Button
               variant="ghost"
@@ -632,7 +632,7 @@ export function MobileNav() {
       >
         {isOpen ? <X /> : <Menu />}
       </Button>
-      
+
       <nav className={cn(
         "fixed inset-x-0 top-16 z-50 bg-background md:hidden",
         "transform transition-transform duration-200",

@@ -1,7 +1,13 @@
 import { auth } from "@/server/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -34,9 +40,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Profile</CardTitle>
-            <CardDescription>
-              Manage your personal information
-            </CardDescription>
+            <CardDescription>Manage your personal information</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 text-sm">
@@ -44,7 +48,8 @@ export default async function DashboardPage() {
                 <span className="font-medium">Email:</span> {user.email}
               </p>
               <p>
-                <span className="font-medium">Name:</span> {user.name || "Not set"}
+                <span className="font-medium">Name:</span>{" "}
+                {user.name || "Not set"}
               </p>
               <p>
                 <span className="font-medium">Verified:</span>{" "}
@@ -60,9 +65,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Nutrition Goals</CardTitle>
-            <CardDescription>
-              Track your nutrition goals
-            </CardDescription>
+            <CardDescription>Track your nutrition goals</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
@@ -77,9 +80,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Recent Meals</CardTitle>
-            <CardDescription>
-              Your meal history
-            </CardDescription>
+            <CardDescription>Your meal history</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
@@ -94,9 +95,7 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Security</CardTitle>
-            <CardDescription>
-              Manage your account security
-            </CardDescription>
+            <CardDescription>Manage your account security</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-2 text-sm">

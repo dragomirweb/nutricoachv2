@@ -1,47 +1,47 @@
-import type { Preview } from '@storybook/nextjs'
-import React from 'react'
-import { ThemeProvider } from '@/components/theme-provider'
-import '../src/app/globals.css'
+import type { Preview } from "@storybook/nextjs";
+import React from "react";
+import { ThemeProvider } from "@/components/theme-provider";
+import "../src/app/globals.css";
 
 const preview: Preview = {
   parameters: {
     controls: {
       matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
+        color: /(background|color)$/i,
+        date: /Date$/i,
       },
     },
     nextjs: {
       appDirectory: true,
     },
     backgrounds: {
-      default: 'light',
+      default: "light",
       values: [
-        { name: 'light', value: '#ffffff' },
-        { name: 'dark', value: '#0F172A' },
+        { name: "light", value: "#ffffff" },
+        { name: "dark", value: "#0F172A" },
       ],
     },
     viewport: {
       viewports: {
         mobile: {
-          name: 'Mobile',
+          name: "Mobile",
           styles: {
-            width: '375px',
-            height: '667px',
+            width: "375px",
+            height: "667px",
           },
         },
         tablet: {
-          name: 'Tablet',
+          name: "Tablet",
           styles: {
-            width: '768px',
-            height: '1024px',
+            width: "768px",
+            height: "1024px",
           },
         },
         desktop: {
-          name: 'Desktop',
+          name: "Desktop",
           styles: {
-            width: '1440px',
-            height: '900px',
+            width: "1440px",
+            height: "900px",
           },
         },
       },
@@ -59,6 +59,6 @@ const preview: Preview = {
       </ThemeProvider>
     ),
   ],
-}
+};
 
-export default preview
+export default preview;

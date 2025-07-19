@@ -5,6 +5,7 @@ This document outlines patterns for handling background jobs, scheduled tasks, a
 ## Overview
 
 Background job processing is essential for:
+
 - AI-powered meal parsing and analysis
 - Nutrition data aggregation
 - Daily summary generation
@@ -65,11 +66,11 @@ interface MealProcessingJob {
 
 export async function processMealWithAI(job: Job<MealProcessingJob>) {
   const { mealId, description, userId } = job.data;
-  
+
   try {
     // Update job progress
     await job.updateProgress(10);
-    
+
     // Call OpenAI to parse meal
     const completion = await openai.chat.completions.create({
       model: "gpt-4-turbo-preview",
@@ -87,12 +88,12 @@ export async function processMealWithAI(job: Job<MealProcessingJob>) {
       ],
       response_format: { type: "json_object" },
     });
-    
+
     await job.updateProgress(50);
-    
+
     const parsedData = JSON.parse(completion.choices[0].message.content);
     const items = parsedData.items || [];
-    
+
     // Calculate totals
     const totals = items.reduce(
       (acc, item) => ({
@@ -104,9 +105,9 @@ export async function processMealWithAI(job: Job<MealProcessingJob>) {
       }),
       { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 }
     );
-    
+
     await job.updateProgress(70);
-    
+
     // Update database
     await db.transaction(async (tx) => {
       // Update meal with totals
@@ -122,7 +123,7 @@ export async function processMealWithAI(job: Job<MealProcessingJob>) {
           updatedAt: new Date(),
         })
         .where(eq(meals.id, mealId));
-      
+
       // Insert food items
       if (items.length > 0) {
         await tx.insert(foodItems).values(
@@ -141,12 +142,12 @@ export async function processMealWithAI(job: Job<MealProcessingJob>) {
         );
       }
     });
-    
+
     await job.updateProgress(100);
-    
+
     // Log success
     await job.log(`Successfully processed meal ${mealId}`);
-    
+
     return { success: true, itemCount: items.length };
   } catch (error) {
     // Log error for debugging
@@ -172,7 +173,7 @@ interface DailySummaryJob {
 export async function generateDailySummary(job: Job<DailySummaryJob>) {
   const { userId, date } = job.data;
   const targetDate = new Date(date);
-  
+
   // Fetch all meals for the day
   const dayMeals = await db.query.meals.findMany({
     where: and(
@@ -184,7 +185,7 @@ export async function generateDailySummary(job: Job<DailySummaryJob>) {
       foodItems: true,
     },
   });
-  
+
   // Calculate daily totals
   const dailyTotals = dayMeals.reduce(
     (acc, meal) => ({
@@ -197,15 +198,12 @@ export async function generateDailySummary(job: Job<DailySummaryJob>) {
     }),
     { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, mealCount: 0 }
   );
-  
+
   // Get user goals
   const activeGoal = await db.query.goals.findFirst({
-    where: and(
-      eq(goals.userId, userId),
-      eq(goals.active, true)
-    ),
+    where: and(eq(goals.userId, userId), eq(goals.active, true)),
   });
-  
+
   // Store daily summary
   await db.insert(dailySummaries).values({
     id: createId(),
@@ -222,11 +220,12 @@ export async function generateDailySummary(job: Job<DailySummaryJob>) {
     goalCarbs: activeGoal?.dailyCarbs,
     goalFat: activeGoal?.dailyFat,
   });
-  
+
   // Queue notification if goals are significantly off
   if (activeGoal) {
-    const caloriePercentage = (dailyTotals.calories / activeGoal.dailyCalories) * 100;
-    
+    const caloriePercentage =
+      (dailyTotals.calories / activeGoal.dailyCalories) * 100;
+
     if (caloriePercentage < 80 || caloriePercentage > 120) {
       await queues.notifications.add("goal-alert", {
         userId,
@@ -240,7 +239,7 @@ export async function generateDailySummary(job: Job<DailySummaryJob>) {
       });
     }
   }
-  
+
   return dailyTotals;
 }
 ```
@@ -294,7 +293,7 @@ export const notificationWorker = new Worker(
   "notifications",
   async (job) => {
     const { userId, type, data } = job.data;
-    
+
     // Get user preferences
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),
@@ -302,24 +301,24 @@ export const notificationWorker = new Worker(
         profile: true,
       },
     });
-    
+
     if (!user?.email) {
       throw new Error("User email not found");
     }
-    
+
     // Render email based on type
     const { subject, html } = renderEmailTemplate(type, {
       user,
       ...data,
     });
-    
+
     // Send email
     await sendEmail({
       to: user.email,
       subject,
       html,
     });
-    
+
     // Log notification
     await db.insert(notificationLogs).values({
       id: createId(),
@@ -351,7 +350,7 @@ export function initializeScheduledJobs() {
     const activeUsers = await db.query.users.findMany({
       where: eq(users.emailVerified, true),
     });
-    
+
     for (const user of activeUsers) {
       await queues.dataAggregation.add(
         "daily-summary",
@@ -369,14 +368,14 @@ export function initializeScheduledJobs() {
       );
     }
   });
-  
+
   // Weekly reports - runs on Sundays at 9 AM
   cron.schedule("0 9 * * 0", async () => {
     await queues.notifications.add("weekly-report", {
       week: getISOWeek(new Date()),
     });
   });
-  
+
   // Database cleanup - runs daily at 3 AM
   cron.schedule("0 3 * * *", async () => {
     await queues.maintenance.add("cleanup", {
@@ -418,10 +417,12 @@ import { queues } from "@/server/queue/config";
 
 export const mealsRouter = router({
   parseWithAI: protectedProcedure
-    .input(z.object({
-      description: z.string().min(1),
-      mealName: z.string().optional(),
-    }))
+    .input(
+      z.object({
+        description: z.string().min(1),
+        mealName: z.string().optional(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       // Create meal placeholder
       const mealId = createId();
@@ -433,7 +434,7 @@ export const mealsRouter = router({
         aiParsed: false,
         loggedAt: new Date(),
       });
-      
+
       // Queue AI processing
       const job = await queues.mealProcessing.add(
         "parse-meal",
@@ -451,7 +452,7 @@ export const mealsRouter = router({
           },
         }
       );
-      
+
       return {
         mealId,
         jobId: job.id,
@@ -483,9 +484,9 @@ export function useJobStatus(jobId: string) {
 // Component usage
 export function MealProcessingStatus({ jobId }: { jobId: string }) {
   const { data: job } = useJobStatus(jobId);
-  
+
   if (!job) return null;
-  
+
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2">
@@ -498,7 +499,7 @@ export function MealProcessingStatus({ jobId }: { jobId: string }) {
           {job.state === "failed" && "Failed"}
         </span>
       </div>
-      
+
       {job.progress !== null && (
         <Progress value={job.progress} className="w-full" />
       )}
@@ -513,25 +514,21 @@ export function MealProcessingStatus({ jobId }: { jobId: string }) {
 
 ```typescript
 // Job with custom retry logic
-await queue.add(
-  "process-meal",
-  jobData,
-  {
-    attempts: 5,
-    backoff: {
-      type: "custom",
-      delay: (attemptsMade) => {
-        // Exponential backoff with jitter
-        return Math.min(
-          Math.pow(2, attemptsMade) * 1000 + Math.random() * 1000,
-          30000 // Max 30 seconds
-        );
-      },
+await queue.add("process-meal", jobData, {
+  attempts: 5,
+  backoff: {
+    type: "custom",
+    delay: (attemptsMade) => {
+      // Exponential backoff with jitter
+      return Math.min(
+        Math.pow(2, attemptsMade) * 1000 + Math.random() * 1000,
+        30000 // Max 30 seconds
+      );
     },
-    removeOnComplete: true,
-    removeOnFail: false, // Keep failed jobs for debugging
-  }
-);
+  },
+  removeOnComplete: true,
+  removeOnFail: false, // Keep failed jobs for debugging
+});
 ```
 
 ### Dead Letter Queue
@@ -571,11 +568,11 @@ createBullBoard({
 // Protect with authentication
 export async function GET(req: Request) {
   const session = await auth.api.getSession({ headers: req.headers });
-  
+
   if (!session || session.user.role !== "admin") {
     return new Response("Unauthorized", { status: 401 });
   }
-  
+
   return serverAdapter.getRouter();
 }
 ```
@@ -586,23 +583,17 @@ export async function GET(req: Request) {
 // src/server/monitoring/queue-metrics.ts
 export async function getQueueMetrics(queueName: string) {
   const queue = queues[queueName];
-  
-  const [
-    waiting,
-    active,
-    completed,
-    failed,
-    delayed,
-    paused,
-  ] = await Promise.all([
-    queue.getWaitingCount(),
-    queue.getActiveCount(),
-    queue.getCompletedCount(),
-    queue.getFailedCount(),
-    queue.getDelayedCount(),
-    queue.getPausedCount(),
-  ]);
-  
+
+  const [waiting, active, completed, failed, delayed, paused] =
+    await Promise.all([
+      queue.getWaitingCount(),
+      queue.getActiveCount(),
+      queue.getCompletedCount(),
+      queue.getFailedCount(),
+      queue.getDelayedCount(),
+      queue.getPausedCount(),
+    ]);
+
   return {
     waiting,
     active,
@@ -643,9 +634,9 @@ describe("Meal Processing Job", () => {
       updateProgress: jest.fn(),
       log: jest.fn(),
     } as unknown as Job;
-    
+
     const result = await processMealWithAI(mockJob);
-    
+
     expect(result.success).toBe(true);
     expect(result.itemCount).toBeGreaterThan(0);
     expect(mockJob.updateProgress).toHaveBeenCalledWith(100);

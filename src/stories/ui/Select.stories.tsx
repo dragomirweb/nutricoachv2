@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   Select,
   SelectContent,
@@ -7,20 +7,20 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 const meta = {
-  title: 'UI/Select',
+  title: "UI/Select",
   component: Select,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
-} satisfies Meta<typeof Select>
+  tags: ["autodocs"],
+} satisfies Meta<typeof Select>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -35,7 +35,7 @@ export const Default: Story = {
       </SelectContent>
     </Select>
   ),
-}
+};
 
 export const WithLabel: Story = {
   render: () => (
@@ -54,7 +54,7 @@ export const WithLabel: Story = {
       </Select>
     </div>
   ),
-}
+};
 
 export const WithGroups: Story = {
   render: () => (
@@ -87,7 +87,7 @@ export const WithGroups: Story = {
       </SelectContent>
     </Select>
   ),
-}
+};
 
 export const GoalSelector: Story = {
   render: () => (
@@ -107,7 +107,7 @@ export const GoalSelector: Story = {
       </Select>
     </div>
   ),
-}
+};
 
 export const ActivityLevel: Story = {
   render: () => (
@@ -121,38 +121,48 @@ export const ActivityLevel: Story = {
           <SelectItem value="sedentary">
             <div>
               <div className="font-medium">Sedentary</div>
-              <div className="text-sm text-muted-foreground">Little to no exercise</div>
+              <div className="text-sm text-muted-foreground">
+                Little to no exercise
+              </div>
             </div>
           </SelectItem>
           <SelectItem value="light">
             <div>
               <div className="font-medium">Lightly Active</div>
-              <div className="text-sm text-muted-foreground">Exercise 1-3 days/week</div>
+              <div className="text-sm text-muted-foreground">
+                Exercise 1-3 days/week
+              </div>
             </div>
           </SelectItem>
           <SelectItem value="moderate">
             <div>
               <div className="font-medium">Moderately Active</div>
-              <div className="text-sm text-muted-foreground">Exercise 3-5 days/week</div>
+              <div className="text-sm text-muted-foreground">
+                Exercise 3-5 days/week
+              </div>
             </div>
           </SelectItem>
           <SelectItem value="very">
             <div>
               <div className="font-medium">Very Active</div>
-              <div className="text-sm text-muted-foreground">Exercise 6-7 days/week</div>
+              <div className="text-sm text-muted-foreground">
+                Exercise 6-7 days/week
+              </div>
             </div>
           </SelectItem>
           <SelectItem value="extra">
             <div>
               <div className="font-medium">Extra Active</div>
-              <div className="text-sm text-muted-foreground">Physical job or 2x/day training</div>
+              <div className="text-sm text-muted-foreground">
+                Physical job or 2x/day training
+              </div>
             </div>
           </SelectItem>
         </SelectContent>
       </Select>
     </div>
   ),
-}
+};
 
 export const PortionSize: Story = {
   render: () => (
@@ -173,7 +183,7 @@ export const PortionSize: Story = {
       </Select>
     </div>
   ),
-}
+};
 
 export const Disabled: Story = {
   render: () => (
@@ -186,4 +196,4 @@ export const Disabled: Story = {
       </SelectContent>
     </Select>
   ),
-}
+};

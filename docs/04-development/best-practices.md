@@ -28,25 +28,25 @@ src/modules/
 
 ```typescript
 // Components: PascalCase
-MealCard.tsx
-CreateMealDialog.tsx
+MealCard.tsx;
+CreateMealDialog.tsx;
 
 // Hooks: camelCase with 'use' prefix
-useMeals.ts
-useCreateMeal.ts
+useMeals.ts;
+useCreateMeal.ts;
 
 // Utilities: camelCase
-formatCalories.ts
-calculateMacros.ts
+formatCalories.ts;
+calculateMacros.ts;
 
 // Schemas: kebab-case
-create-meal.schema.ts
-update-profile.schema.ts
+create - meal.schema.ts;
+update - profile.schema.ts;
 
 // Server files: descriptive names
-meals.router.ts
-meals.service.ts
-meals.repository.ts
+meals.router.ts;
+meals.service.ts;
+meals.repository.ts;
 ```
 
 ## TypeScript Best Practices
@@ -79,7 +79,7 @@ const count: number = meals.length;
 
 // ✅ Let TypeScript infer
 const meals = await getMeals(); // Type is inferred
-const count = meals.length;      // Type is inferred
+const count = meals.length; // Type is inferred
 ```
 
 ### Discriminated Unions
@@ -179,7 +179,7 @@ function useDebounce<T>(value: T, delay: number): T {
 function SearchMeals() {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query, 300);
-  
+
   const { data } = trpc.meals.search.useQuery(
     { query: debouncedQuery },
     { enabled: debouncedQuery.length > 0 }
@@ -230,17 +230,17 @@ export const mealsRouter = router({
   list: protectedProcedure.input(listSchema).query(listHandler),
   get: protectedProcedure.input(getSchema).query(getHandler),
   search: protectedProcedure.input(searchSchema).query(searchHandler),
-  
+
   // Mutations - write operations
   create: protectedProcedure.input(createSchema).mutation(createHandler),
   update: protectedProcedure.input(updateSchema).mutation(updateHandler),
   delete: protectedProcedure.input(deleteSchema).mutation(deleteHandler),
-  
+
   // Specialized operations
   parseWithAI: protectedProcedure
     .input(parseSchema)
     .mutation(parseWithAIHandler),
-  
+
   // Nested routers for sub-resources
   foodItems: foodItemsRouter,
 });
@@ -253,7 +253,10 @@ export const mealsRouter = router({
 const createMealSchema = z.object({
   name: z.string().min(1).max(100),
   type: z.enum(["breakfast", "lunch", "dinner", "snack"]).optional(),
-  loggedAt: z.date().optional().default(() => new Date()),
+  loggedAt: z
+    .date()
+    .optional()
+    .default(() => new Date()),
   foodItems: z.array(foodItemSchema).min(1),
 });
 
@@ -273,21 +276,21 @@ import { TRPCError } from "@trpc/server";
 export class MealService {
   async getMeal(id: string, userId: string) {
     const meal = await this.repository.findById(id);
-    
+
     if (!meal) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "Meal not found",
       });
     }
-    
+
     if (meal.userId !== userId) {
       throw new TRPCError({
         code: "FORBIDDEN",
         message: "You don't have access to this meal",
       });
     }
-    
+
     return meal;
   }
 }
@@ -334,7 +337,7 @@ async function createMealWithItems(data: CreateMealInput) {
         name: data.name,
       })
       .returning();
-    
+
     // Create food items
     if (data.foodItems.length > 0) {
       await tx.insert(foodItems).values(
@@ -344,7 +347,7 @@ async function createMealWithItems(data: CreateMealInput) {
         }))
       );
     }
-    
+
     return meal;
   });
 }
@@ -367,7 +370,7 @@ const MealStats = memo(({ meals }: { meals: Meal[] }) => {
       { totalCalories: 0, totalProtein: 0, count: 0 }
     );
   }, [meals]);
-  
+
   return <StatsDisplay stats={stats} />;
 });
 
@@ -394,14 +397,14 @@ function useDashboardData() {
     t.nutrition.getDailyStats({ date: new Date() }),
     t.meals.list({ limit: 5 }),
   ]);
-  
+
   return { profile, stats, recentMeals };
 }
 
 // Prefetch predictable navigation
 function MealLink({ mealId }: { mealId: string }) {
   const utils = trpc.useContext();
-  
+
   return (
     <Link
       href={`/meals/${mealId}`}
@@ -449,23 +452,18 @@ const updateMeal = protectedProcedure
   .mutation(async ({ ctx, input }) => {
     // Verify ownership first
     const meal = await ctx.db.query.meals.findFirst({
-      where: and(
-        eq(meals.id, input.id),
-        eq(meals.userId, ctx.session.user.id)
-      ),
+      where: and(eq(meals.id, input.id), eq(meals.userId, ctx.session.user.id)),
     });
-    
+
     if (!meal) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "Meal not found or access denied",
       });
     }
-    
+
     // Proceed with update
-    return ctx.db.update(meals)
-      .set(input)
-      .where(eq(meals.id, input.id));
+    return ctx.db.update(meals).set(input).where(eq(meals.id, input.id));
   });
 ```
 
@@ -505,11 +503,11 @@ describe("MealService", () => {
     it("should create a meal with valid data", async () => {
       // Test implementation
     });
-    
+
     it("should calculate totals correctly", async () => {
       // Test implementation
     });
-    
+
     it("should throw error for invalid user", async () => {
       // Test implementation
     });
@@ -528,17 +526,17 @@ class MealBuilder {
     userId: "test-user",
     totalCalories: 500,
   };
-  
+
   withName(name: string) {
     this.meal.name = name;
     return this;
   }
-  
+
   withCalories(calories: number) {
     this.meal.totalCalories = calories;
     return this;
   }
-  
+
   build(): Meal {
     return this.meal as Meal;
   }
@@ -559,11 +557,11 @@ const meal = new MealBuilder()
 /**
  * Calculates the recommended daily caloric intake based on user profile
  * and activity level using the Mifflin-St Jeor equation.
- * 
+ *
  * @param profile - User profile containing age, weight, height, and gender
  * @param activityLevel - User's activity level
  * @returns Recommended daily calories
- * 
+ *
  * @example
  * const calories = calculateDailyCalories(profile, "moderately_active");
  * // Returns: 2200
@@ -584,6 +582,7 @@ Each module should have a README:
 # Meals Module
 
 This module handles all meal-related functionality including:
+
 - CRUD operations for meals
 - Food item management
 - Nutritional calculations
@@ -598,9 +597,11 @@ This module handles all meal-related functionality including:
 ## Key Features
 
 ### AI Meal Parsing
+
 Uses OpenAI to parse natural language meal descriptions...
 
 ### Nutritional Tracking
+
 Automatically calculates totals based on food items...
 ```
 

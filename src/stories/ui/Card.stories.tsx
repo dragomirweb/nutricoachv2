@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   Card,
   CardContent,
@@ -6,23 +6,23 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Calendar, CreditCard, Settings, User } from 'lucide-react'
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar, CreditCard, Settings, User } from "lucide-react";
 
 const meta = {
-  title: 'UI/Card',
+  title: "UI/Card",
   component: Card,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
-} satisfies Meta<typeof Card>
+  tags: ["autodocs"],
+} satisfies Meta<typeof Card>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -39,7 +39,7 @@ export const Default: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const LoginCard: Story = {
   render: () => (
@@ -68,7 +68,7 @@ export const LoginCard: Story = {
       </CardFooter>
     </Card>
   ),
-}
+};
 
 export const NutritionCard: Story = {
   render: () => (
@@ -89,14 +89,14 @@ export const NutritionCard: Story = {
               <span>62%</span>
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
-              <div className="h-full bg-primary" style={{ width: '62%' }} />
+              <div className="h-full bg-primary" style={{ width: "62%" }} />
             </div>
           </div>
         </div>
       </CardContent>
     </Card>
   ),
-}
+};
 
 export const StatsCards: Story = {
   render: () => (
@@ -108,9 +108,7 @@ export const StatsCards: Story = {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">1,234</div>
-          <p className="text-xs text-muted-foreground">
-            +20.1% from yesterday
-          </p>
+          <p className="text-xs text-muted-foreground">+20.1% from yesterday</p>
         </CardContent>
       </Card>
       <Card>
@@ -120,9 +118,7 @@ export const StatsCards: Story = {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">89g</div>
-          <p className="text-xs text-muted-foreground">
-            +15% from target
-          </p>
+          <p className="text-xs text-muted-foreground">+15% from target</p>
         </CardContent>
       </Card>
       <Card>
@@ -132,9 +128,7 @@ export const StatsCards: Story = {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">2.1L</div>
-          <p className="text-xs text-muted-foreground">
-            85% of daily goal
-          </p>
+          <p className="text-xs text-muted-foreground">85% of daily goal</p>
         </CardContent>
       </Card>
       <Card>
@@ -144,14 +138,12 @@ export const StatsCards: Story = {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">24</div>
-          <p className="text-xs text-muted-foreground">
-            This month
-          </p>
+          <p className="text-xs text-muted-foreground">This month</p>
         </CardContent>
       </Card>
     </div>
   ),
-}
+};
 
 export const MacroBreakdownCard: Story = {
   render: () => (
@@ -168,9 +160,9 @@ export const MacroBreakdownCard: Story = {
               <span className="text-sm font-medium">89g / 120g</span>
             </div>
             <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-protein transition-all duration-300" 
-                style={{ width: '74%' }}
+              <div
+                className="h-full bg-protein transition-all duration-300"
+                style={{ width: "74%" }}
               />
             </div>
           </div>
@@ -180,9 +172,9 @@ export const MacroBreakdownCard: Story = {
               <span className="text-sm font-medium">234g / 250g</span>
             </div>
             <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-carbs transition-all duration-300" 
-                style={{ width: '94%' }}
+              <div
+                className="h-full bg-carbs transition-all duration-300"
+                style={{ width: "94%" }}
               />
             </div>
           </div>
@@ -192,9 +184,9 @@ export const MacroBreakdownCard: Story = {
               <span className="text-sm font-medium">56g / 80g</span>
             </div>
             <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-fat transition-all duration-300" 
-                style={{ width: '70%' }}
+              <div
+                className="h-full bg-fat transition-all duration-300"
+                style={{ width: "70%" }}
               />
             </div>
           </div>
@@ -204,9 +196,9 @@ export const MacroBreakdownCard: Story = {
               <span className="text-sm font-medium">24g / 30g</span>
             </div>
             <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-fiber transition-all duration-300" 
-                style={{ width: '80%' }}
+              <div
+                className="h-full bg-fiber transition-all duration-300"
+                style={{ width: "80%" }}
               />
             </div>
           </div>
@@ -214,4 +206,4 @@ export const MacroBreakdownCard: Story = {
       </CardContent>
     </Card>
   ),
-}
+};

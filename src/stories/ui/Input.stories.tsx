@@ -1,62 +1,62 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Search, Mail, Lock, User } from 'lucide-react'
+import type { Meta, StoryObj } from "@storybook/react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Search, Mail, Lock, User } from "lucide-react";
 
 const meta = {
-  title: 'UI/Input',
+  title: "UI/Input",
   component: Input,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     type: {
-      control: 'select',
-      options: ['text', 'email', 'password', 'number', 'tel', 'url', 'search'],
+      control: "select",
+      options: ["text", "email", "password", "number", "tel", "url", "search"],
     },
     disabled: {
-      control: 'boolean',
+      control: "boolean",
     },
   },
-} satisfies Meta<typeof Input>
+} satisfies Meta<typeof Input>;
 
-export default meta
-type Story = StoryObj<typeof meta>
+export default meta;
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    placeholder: 'Enter text...',
+    placeholder: "Enter text...",
   },
-}
+};
 
 export const Email: Story = {
   args: {
-    type: 'email',
-    placeholder: 'email@example.com',
+    type: "email",
+    placeholder: "email@example.com",
   },
-}
+};
 
 export const Password: Story = {
   args: {
-    type: 'password',
-    placeholder: 'Enter your password',
+    type: "password",
+    placeholder: "Enter your password",
   },
-}
+};
 
 export const SearchInput: Story = {
   args: {
-    type: 'search',
-    placeholder: 'Search...',
+    type: "search",
+    placeholder: "Search...",
   },
-}
+};
 
 export const Disabled: Story = {
   args: {
-    placeholder: 'Disabled input',
+    placeholder: "Disabled input",
     disabled: true,
   },
-}
+};
 
 export const WithLabel: Story = {
   render: () => (
@@ -65,22 +65,24 @@ export const WithLabel: Story = {
       <Input type="email" id="email" placeholder="Email" />
     </div>
   ),
-}
+};
 
 export const WithError: Story = {
   render: () => (
     <div className="grid w-full max-w-sm items-center gap-1.5">
       <Label htmlFor="email-error">Email</Label>
-      <Input 
-        type="email" 
-        id="email-error" 
-        placeholder="Email" 
+      <Input
+        type="email"
+        id="email-error"
+        placeholder="Email"
         className="border-destructive focus-visible:ring-destructive"
       />
-      <p className="text-sm text-destructive">Please enter a valid email address</p>
+      <p className="text-sm text-destructive">
+        Please enter a valid email address
+      </p>
     </div>
   ),
-}
+};
 
 export const WithIcons: Story = {
   render: () => (
@@ -103,15 +105,15 @@ export const WithIcons: Story = {
       </div>
     </div>
   ),
-}
+};
 
 export const NutritionInputs: Story = {
   render: () => (
     <div className="space-y-4 w-full max-w-md">
       <div>
         <Label htmlFor="meal-description">What did you eat?</Label>
-        <Input 
-          id="meal-description" 
+        <Input
+          id="meal-description"
           placeholder="e.g., 2 eggs, toast with butter, and orange juice"
           className="mt-1"
         />
@@ -119,46 +121,26 @@ export const NutritionInputs: Story = {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="calories">Calories</Label>
-          <Input 
-            id="calories" 
-            type="number" 
-            placeholder="0"
-            className="mt-1"
-          />
+          <Input id="calories" type="number" placeholder="0" className="mt-1" />
         </div>
         <div>
           <Label htmlFor="protein">Protein (g)</Label>
-          <Input 
-            id="protein" 
-            type="number" 
-            placeholder="0"
-            className="mt-1"
-          />
+          <Input id="protein" type="number" placeholder="0" className="mt-1" />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label htmlFor="carbs">Carbs (g)</Label>
-          <Input 
-            id="carbs" 
-            type="number" 
-            placeholder="0"
-            className="mt-1"
-          />
+          <Input id="carbs" type="number" placeholder="0" className="mt-1" />
         </div>
         <div>
           <Label htmlFor="fat">Fat (g)</Label>
-          <Input 
-            id="fat" 
-            type="number" 
-            placeholder="0"
-            className="mt-1"
-          />
+          <Input id="fat" type="number" placeholder="0" className="mt-1" />
         </div>
       </div>
     </div>
   ),
-}
+};
 
 export const AllVariants: Story = {
   render: () => (
@@ -169,10 +151,10 @@ export const AllVariants: Story = {
       <Input type="number" placeholder="Number input" />
       <Input type="search" placeholder="Search input" />
       <Input disabled placeholder="Disabled input" />
-      <Input 
-        placeholder="Error state" 
+      <Input
+        placeholder="Error state"
         className="border-destructive focus-visible:ring-destructive"
       />
     </div>
   ),
-}
+};

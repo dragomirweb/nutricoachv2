@@ -16,7 +16,7 @@ AI-powered nutrition tracking and meal planning assistant built with Next.js 15,
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - PostgreSQL database
 - npm or yarn
 
@@ -24,17 +24,21 @@ AI-powered nutrition tracking and meal planning assistant built with Next.js 15,
 
 1. Clone the repository
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Set up environment variables:
+
    ```bash
    cp .env.example .env
    ```
+
    Update `.env` with your database credentials and auth secret.
 
 4. Generate auth secret:
+
    ```bash
    openssl rand -base64 32
    ```

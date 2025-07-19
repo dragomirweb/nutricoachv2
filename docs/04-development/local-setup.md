@@ -83,6 +83,7 @@ SMTP_FROM="noreply@nutricoach.local"
 ### Option 1: Local PostgreSQL
 
 1. Install PostgreSQL:
+
    ```bash
    # macOS with Homebrew
    brew install postgresql@15
@@ -95,6 +96,7 @@ SMTP_FROM="noreply@nutricoach.local"
    ```
 
 2. Create database:
+
    ```bash
    createdb nutricoach_dev
    ```
@@ -107,6 +109,7 @@ SMTP_FROM="noreply@nutricoach.local"
 ### Option 2: Docker PostgreSQL
 
 1. Start PostgreSQL container:
+
    ```bash
    docker run --name nutricoach-postgres \
      -e POSTGRES_PASSWORD=password \
@@ -158,6 +161,7 @@ pnpm workers:dev
 ```
 
 The application will be available at:
+
 - Main app: http://localhost:3000
 - API routes: http://localhost:3000/api
 - tRPC playground: http://localhost:3000/api/trpc-playground (dev only)
@@ -181,6 +185,7 @@ pnpm db:studio
 ### 3. Type Generation
 
 TypeScript types are automatically generated from:
+
 - tRPC routers (automatic inference)
 - Database schema (via Drizzle)
 - Environment variables (via t3-env)
@@ -210,7 +215,7 @@ For a complete local environment:
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -243,6 +248,7 @@ volumes:
 ```
 
 Start all services:
+
 ```bash
 docker-compose up -d
 ```
@@ -282,12 +288,15 @@ async function seed() {
   console.log("🌱 Seeding database...");
 
   // Create test user
-  const [user] = await db.insert(users).values({
-    id: "test-user-1",
-    email: "test@example.com",
-    name: "Test User",
-    emailVerified: true,
-  }).returning();
+  const [user] = await db
+    .insert(users)
+    .values({
+      id: "test-user-1",
+      email: "test@example.com",
+      name: "Test User",
+      emailVerified: true,
+    })
+    .returning();
 
   // Create password
   await db.insert(accounts).values({
@@ -299,19 +308,22 @@ async function seed() {
   });
 
   // Create sample meals
-  const meals = await db.insert(meals).values([
-    {
-      id: "meal-1",
-      userId: user.id,
-      name: "Breakfast",
-      type: "breakfast",
-      totalCalories: 450,
-      totalProtein: 25,
-      totalCarbs: 55,
-      totalFat: 15,
-    },
-    // ... more meals
-  ]).returning();
+  const meals = await db
+    .insert(meals)
+    .values([
+      {
+        id: "meal-1",
+        userId: user.id,
+        name: "Breakfast",
+        type: "breakfast",
+        totalCalories: 450,
+        totalProtein: 25,
+        totalCarbs: 55,
+        totalFat: 15,
+      },
+      // ... more meals
+    ])
+    .returning();
 
   console.log("✅ Seeding complete!");
 }
@@ -320,6 +332,7 @@ seed().catch(console.error);
 ```
 
 Run the seed script:
+
 ```bash
 pnpm tsx src/scripts/seed.ts
 ```
@@ -358,6 +371,7 @@ LOG_LEVEL=debug
 ### VS Code Setup
 
 Recommended extensions:
+
 - ESLint
 - Prettier
 - Tailwind CSS IntelliSense
@@ -365,6 +379,7 @@ Recommended extensions:
 - Thunder Client (API testing)
 
 Settings (`.vscode/settings.json`):
+
 ```json
 {
   "editor.formatOnSave": true,

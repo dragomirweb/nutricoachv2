@@ -10,41 +10,41 @@ graph TB
         WEB[Web App<br/>Next.js 15.4.1]
         MOBILE[Mobile PWA]
     end
-    
+
     subgraph "Edge Layer"
         CDN[Vercel Edge Network]
         MW[Middleware<br/>Auth & Rate Limiting]
     end
-    
+
     subgraph "Application Layer"
         NEXT[Next.js App Router]
         API[tRPC API v11]
         AUTH[Better Auth v1.2.9]
     end
-    
+
     subgraph "Service Layer"
         MEAL[Meal Service]
         NUTRITION[Nutrition Service]
         USER[User Service]
         AI[AI Service]
     end
-    
+
     subgraph "Queue Layer"
         REDIS[(Redis)]
         BULL[BullMQ Workers]
     end
-    
+
     subgraph "Data Layer"
         PG[(PostgreSQL)]
         S3[Object Storage]
     end
-    
+
     subgraph "External Services"
         OPENAI[OpenAI API]
         EMAIL[Email Service]
         OAUTH[OAuth Providers]
     end
-    
+
     WEB --> CDN
     MOBILE --> CDN
     CDN --> MW
@@ -80,19 +80,19 @@ graph TD
         HOOKS[Custom Hooks]
         UTILS[Utilities]
     end
-    
+
     subgraph "State Management"
         RQ[React Query]
         TRPC[tRPC Client]
         CONTEXT[React Context]
     end
-    
+
     subgraph "UI Layer"
         TAILWIND[Tailwind CSS v4]
         RADIX[Radix UI]
         COMPONENTS
     end
-    
+
     APP --> PAGES
     PAGES --> COMPONENTS
     COMPONENTS --> HOOKS
@@ -111,19 +111,19 @@ graph LR
         PROC[Procedures]
         MW2[Middleware]
     end
-    
+
     subgraph "Business Logic"
         SVC[Services]
         REPO[Repositories]
         VALID[Validators]
     end
-    
+
     subgraph "Infrastructure"
         DB[Database]
         CACHE[Cache]
         QUEUE[Job Queue]
     end
-    
+
     ROUTER --> PROC
     PROC --> MW2
     MW2 --> SVC
@@ -144,7 +144,7 @@ sequenceDiagram
     participant BetterAuth
     participant Database
     participant OAuth
-    
+
     alt Email/Password Login
         User->>Browser: Enter credentials
         Browser->>NextJS: POST /api/auth/signin
@@ -184,19 +184,19 @@ graph LR
         HOOK[useQuery Hook]
         CACHE1[Query Cache]
     end
-    
+
     subgraph "Server"
         TRPC2[tRPC Endpoint]
         SERVICE[Service Layer]
         DB2[(Database)]
     end
-    
+
     UI --> HOOK
     HOOK --> CACHE1
     CACHE1 --> TRPC2
     TRPC2 --> SERVICE
     SERVICE --> DB2
-    
+
     DB2 -.-> SERVICE
     SERVICE -.-> TRPC2
     TRPC2 -.-> CACHE1
@@ -230,25 +230,25 @@ graph TB
             SERVERLESS[Serverless Functions]
             STATIC[Static Assets]
         end
-        
+
         subgraph "Database Cluster"
             PRIMARY[(Primary DB)]
             REPLICA1[(Read Replica 1)]
             REPLICA2[(Read Replica 2)]
         end
-        
+
         subgraph "Redis Cluster"
             REDIS1[Redis Primary]
             REDIS2[Redis Replica]
         end
-        
+
         subgraph "Background Workers"
             WORKER1[Worker 1]
             WORKER2[Worker 2]
             WORKER3[Worker 3]
         end
     end
-    
+
     EDGE --> SERVERLESS
     SERVERLESS --> PRIMARY
     SERVERLESS --> REPLICA1
@@ -269,21 +269,21 @@ graph TD
         WAF[Web Application Firewall]
         DDOS[DDoS Protection]
         SSL[SSL/TLS Termination]
-        
+
         subgraph "Application Security"
             AUTH_MW[Auth Middleware]
             RATE[Rate Limiting]
             CSRF[CSRF Protection]
             CSP[Content Security Policy]
         end
-        
+
         subgraph "Data Security"
             ENCRYPT[Encryption at Rest]
             ROW_SEC[Row Level Security]
             AUDIT[Audit Logging]
         end
     end
-    
+
     WAF --> DDOS
     DDOS --> SSL
     SSL --> AUTH_MW
@@ -305,21 +305,21 @@ graph TD
             AUTH_SERVICE[Service]
             AUTH_UI[UI Components]
         end
-        
+
         subgraph "Meals Module"
             MEAL_ROUTER[Router]
             MEAL_SERVICE[Service]
             MEAL_REPO[Repository]
             MEAL_UI[UI Components]
         end
-        
+
         subgraph "Nutrition Module"
             NUTR_ROUTER[Router]
             NUTR_SERVICE[Service]
             NUTR_CALC[Calculator]
             NUTR_UI[UI Components]
         end
-        
+
         subgraph "User Module"
             USER_ROUTER[Router]
             USER_SERVICE[Service]
@@ -327,14 +327,14 @@ graph TD
             USER_UI[UI Components]
         end
     end
-    
+
     subgraph "Shared Infrastructure"
         SHARED_DB[Database]
         SHARED_CACHE[Cache]
         SHARED_QUEUE[Queue]
         SHARED_UTILS[Utilities]
     end
-    
+
     AUTH_SERVICE --> SHARED_DB
     MEAL_SERVICE --> SHARED_DB
     NUTR_SERVICE --> SHARED_CACHE
@@ -355,7 +355,7 @@ graph LR
         REDIS_CACHE[Redis Cache]
         DB_CACHE[DB Query Cache]
     end
-    
+
     REQUEST[Request] --> BROWSER
     BROWSER -->|Miss| CDN_CACHE
     CDN_CACHE -->|Miss| QUERY_CACHE
@@ -370,24 +370,24 @@ graph LR
 graph TD
     subgraph "Load Distribution"
         LB[Load Balancer]
-        
+
         subgraph "Application Instances"
             APP1[Instance 1]
             APP2[Instance 2]
             APP3[Instance 3]
         end
-        
+
         subgraph "Database Connections"
             POOL1[Connection Pool 1]
             POOL2[Connection Pool 2]
             POOL3[Connection Pool 3]
         end
     end
-    
+
     LB --> APP1
     LB --> APP2
     LB --> APP3
-    
+
     APP1 --> POOL1
     APP2 --> POOL2
     APP3 --> POOL3
@@ -398,26 +398,26 @@ graph TD
 ```mermaid
 flowchart TD
     ERROR[Error Occurs]
-    
+
     ERROR --> TYPE{Error Type}
-    
+
     TYPE -->|Client| CLIENT_HANDLER[Client Error Handler]
     TYPE -->|Server| SERVER_HANDLER[Server Error Handler]
     TYPE -->|Network| NETWORK_HANDLER[Network Error Handler]
-    
+
     CLIENT_HANDLER --> LOG_CLIENT[Log to Console]
     CLIENT_HANDLER --> UI_FEEDBACK[Show User Feedback]
-    
+
     SERVER_HANDLER --> LOG_SERVER[Log to Server]
     SERVER_HANDLER --> SENTRY[Send to Sentry]
     SERVER_HANDLER --> RETRY{Retryable?}
-    
+
     NETWORK_HANDLER --> OFFLINE[Offline Queue]
     NETWORK_HANDLER --> RETRY
-    
+
     RETRY -->|Yes| BACKOFF[Exponential Backoff]
     RETRY -->|No| FAIL[Return Error]
-    
+
     BACKOFF --> ATTEMPT[Retry Attempt]
     ATTEMPT -->|Success| SUCCESS[Continue]
     ATTEMPT -->|Fail| ERROR
@@ -431,24 +431,24 @@ gitGraph
     branch develop
     checkout develop
     commit id: "feature-start"
-    
+
     branch feature/meal-ai
     checkout feature/meal-ai
     commit id: "add-ai-parsing"
     commit id: "add-tests"
     commit id: "fix-bugs"
-    
+
     checkout develop
     merge feature/meal-ai
-    
+
     branch release/v1.2
     checkout release/v1.2
     commit id: "version-bump"
     commit id: "release-notes"
-    
+
     checkout main
     merge release/v1.2 tag: "v1.2.0"
-    
+
     checkout develop
     merge release/v1.2
 ```
@@ -462,26 +462,26 @@ graph TD
         APP_METRICS[Performance Metrics]
         APP_ERRORS[Error Tracking]
     end
-    
+
     subgraph "Infrastructure Metrics"
         SERVER_METRICS[Server Metrics]
         DB_METRICS[Database Metrics]
         QUEUE_METRICS[Queue Metrics]
     end
-    
+
     subgraph "Business Metrics"
         USER_ANALYTICS[User Analytics]
         FEATURE_USAGE[Feature Usage]
         API_USAGE[API Usage]
     end
-    
+
     subgraph "Monitoring Stack"
         COLLECTOR[Metrics Collector]
         STORAGE[Time Series DB]
         ALERTS[Alert Manager]
         DASHBOARD[Dashboards]
     end
-    
+
     APP_LOGS --> COLLECTOR
     APP_METRICS --> COLLECTOR
     APP_ERRORS --> COLLECTOR
@@ -491,7 +491,7 @@ graph TD
     USER_ANALYTICS --> COLLECTOR
     FEATURE_USAGE --> COLLECTOR
     API_USAGE --> COLLECTOR
-    
+
     COLLECTOR --> STORAGE
     STORAGE --> ALERTS
     STORAGE --> DASHBOARD
@@ -508,7 +508,7 @@ graph LR
         DB_SINGLE[(Single DB)]
         CACHE_SINGLE[Single Cache]
     end
-    
+
     subgraph "Scaled State"
         LB2[Load Balancer]
         APP_MULTI1[App Instance 1]
@@ -519,16 +519,16 @@ graph LR
         DB_READ2[(Read Replica 2)]
         CACHE_CLUSTER[Redis Cluster]
     end
-    
+
     APP_SINGLE -.->|Scale Out| LB2
     LB2 --> APP_MULTI1
     LB2 --> APP_MULTI2
     LB2 --> APP_MULTI3
-    
+
     DB_SINGLE -.->|Replicate| DB_PRIMARY
     DB_PRIMARY --> DB_READ1
     DB_PRIMARY --> DB_READ2
-    
+
     CACHE_SINGLE -.->|Cluster| CACHE_CLUSTER
 ```
 
@@ -538,20 +538,20 @@ graph LR
 graph TD
     subgraph "Sharding by User ID"
         ROUTER[Shard Router]
-        
+
         subgraph "Shard 1"
             DB1[(Users 0-999999)]
         end
-        
+
         subgraph "Shard 2"
             DB2[(Users 1000000-1999999)]
         end
-        
+
         subgraph "Shard 3"
             DB3[(Users 2000000-2999999)]
         end
     end
-    
+
     REQUEST[User Request] --> ROUTER
     ROUTER -->|Hash(UserID)| DB1
     ROUTER -->|Hash(UserID)| DB2
@@ -561,6 +561,7 @@ graph TD
 ## Technology Stack Summary
 
 ### Frontend
+
 - **Framework**: Next.js 15.4.1 (App Router)
 - **UI Library**: React 18
 - **Styling**: Tailwind CSS v4
@@ -569,6 +570,7 @@ graph TD
 - **Components**: Radix UI + Custom
 
 ### Backend
+
 - **Runtime**: Node.js 20 LTS
 - **API**: tRPC v11
 - **Authentication**: Better Auth v1.2.9
@@ -578,6 +580,7 @@ graph TD
 - **File Storage**: S3-compatible
 
 ### Infrastructure
+
 - **Hosting**: Vercel (Edge Functions)
 - **Database**: Vercel Postgres / Supabase
 - **CDN**: Vercel Edge Network
@@ -585,6 +588,7 @@ graph TD
 - **CI/CD**: GitHub Actions
 
 ### External Services
+
 - **AI**: OpenAI GPT-4
 - **Email**: SendGrid / Resend
 - **OAuth**: GitHub, Google

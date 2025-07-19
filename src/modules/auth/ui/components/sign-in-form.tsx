@@ -20,7 +20,7 @@ export function SignInForm() {
   const searchParams = useSearchParams();
   const from = searchParams.get("from") || "/dashboard";
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -29,7 +29,7 @@ export function SignInForm() {
       rememberMe: false,
     },
   });
-  
+
   const onSubmit = async (data: SignInInput) => {
     try {
       const { error } = await signIn.email({
@@ -37,7 +37,7 @@ export function SignInForm() {
         password: data.password,
         rememberMe: data.rememberMe,
       });
-      
+
       if (error) {
         if (error.code === "INVALID_CREDENTIALS") {
           form.setError("root", {
@@ -61,7 +61,7 @@ export function SignInForm() {
         }
         return;
       }
-      
+
       toast.success("Welcome back!");
       router.push(from);
     } catch (error) {
@@ -69,7 +69,7 @@ export function SignInForm() {
       toast.error("Something went wrong. Please try again.");
     }
   };
-  
+
   const handleSocialSignIn = async (provider: "github" | "google") => {
     try {
       await signIn.social({
@@ -81,8 +81,7 @@ export function SignInForm() {
       toast.error(`Failed to sign in with ${provider}`);
     }
   };
-  
-  
+
   return (
     <div className="space-y-6">
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -101,7 +100,7 @@ export function SignInForm() {
             </p>
           )}
         </div>
-        
+
         <div>
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
@@ -140,12 +139,12 @@ export function SignInForm() {
             </p>
           )}
         </div>
-        
+
         <div className="flex items-center space-x-2">
           <Checkbox
             id="rememberMe"
             checked={form.watch("rememberMe")}
-            onCheckedChange={(checked) => 
+            onCheckedChange={(checked) =>
               form.setValue("rememberMe", checked as boolean)
             }
           />
@@ -156,13 +155,13 @@ export function SignInForm() {
             Remember me for 30 days
           </Label>
         </div>
-        
+
         {form.formState.errors.root && (
           <p className="text-sm text-destructive">
             {form.formState.errors.root.message}
           </p>
         )}
-        
+
         <Button
           type="submit"
           className="w-full"
@@ -177,9 +176,8 @@ export function SignInForm() {
             "Sign In"
           )}
         </Button>
-        
       </form>
-      
+
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <Separator />
@@ -190,19 +188,13 @@ export function SignInForm() {
           </span>
         </div>
       </div>
-      
+
       <div className="grid grid-cols-2 gap-4">
-        <Button
-          variant="outline"
-          onClick={() => handleSocialSignIn("github")}
-        >
+        <Button variant="outline" onClick={() => handleSocialSignIn("github")}>
           <Github className="mr-2 h-4 w-4" />
           GitHub
         </Button>
-        <Button
-          variant="outline"
-          onClick={() => handleSocialSignIn("google")}
-        >
+        <Button variant="outline" onClick={() => handleSocialSignIn("google")}>
           <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -224,7 +216,7 @@ export function SignInForm() {
           Google
         </Button>
       </div>
-      
+
       <p className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}
         <Link
