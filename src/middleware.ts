@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/server/auth";
 
-
 const authRoutes = [
   "/login",
   "/register",

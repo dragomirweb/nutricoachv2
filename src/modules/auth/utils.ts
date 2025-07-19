@@ -2,13 +2,14 @@ import { db } from "@/server/db";
 import * as schema from "@/server/db/schema";
 import { and, gte, eq, desc, lte } from "drizzle-orm";
 import crypto from "crypto";
+import { subMinutes } from "date-fns";
 
 export async function checkRateLimit(
   identifier: string,
   maxAttempts = 5,
   windowMinutes = 5
 ): Promise<{ allowed: boolean; remainingAttempts: number }> {
-  const windowStart = new Date(Date.now() - windowMinutes * 60 * 1000);
+  const windowStart = subMinutes(new Date(), windowMinutes);
 
   const attempts = await db
     .select()

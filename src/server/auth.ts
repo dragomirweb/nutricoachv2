@@ -11,12 +11,12 @@ export const auth = betterAuth({
       user: schema.users,
       session: schema.sessions,
       account: schema.accounts,
-      verification: schema.verificationTokens,
+      verification: schema.verification,
     },
   }),
 
   baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL,
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.BETTER_AUTH_SECRET || process.env.AUTH_SECRET,
 
   user: {
     modelName: "user",
@@ -111,7 +111,9 @@ export const auth = betterAuth({
 
   advanced: {
     cookiePrefix: "nutricoach",
-    generateId: () => nanoid(),
+    database: {
+      generateId: () => nanoid(),
+    },
     crossSubDomainCookies: {
       enabled: false,
     },

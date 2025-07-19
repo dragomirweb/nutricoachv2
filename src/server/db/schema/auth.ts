@@ -72,7 +72,9 @@ export const accounts = pgTable(
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
-    expiresAt: timestamp("expires_at"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at"),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+    scope: text("scope"),
     password: text("password"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")
@@ -89,23 +91,30 @@ export const accounts = pgTable(
   })
 );
 
-export const verificationTokens = pgTable(
-  "verification_token",
+export const verification = pgTable(
+  "verification",
   {
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
-    token: text("token").notNull(),
+    value: text("value").notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (table) => ({
-    tokenIdx: uniqueIndex("verification_token_idx").on(table.token),
-    identifierTokenIdx: index("verification_identifier_token_idx").on(
+    valueIdx: uniqueIndex("verification_value_idx").on(table.value),
+    identifierValueIdx: index("verification_identifier_value_idx").on(
       table.identifier,
-      table.token
+      table.value
     ),
   })
 );
+
+// Keep old table name as alias for backward compatibility
+export const verificationTokens = verification;
 
 export const passwordResetTokens = pgTable(
   "password_reset_token",

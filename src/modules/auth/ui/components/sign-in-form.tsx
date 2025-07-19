@@ -85,7 +85,7 @@ export function SignInForm() {
   return (
     <div className="space-y-6">
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div>
+        <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
@@ -101,7 +101,7 @@ export function SignInForm() {
           )}
         </div>
 
-        <div>
+        <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
             <Link
